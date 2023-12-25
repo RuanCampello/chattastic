@@ -6,7 +6,7 @@ interface BasicInfoProps {
 
 export default function BasicInfo({name, img, text}: BasicInfoProps) {
   return (
-  <div className='flex items-center gap-2'>
+  <div className='flex items-center gap-3'>
     <img src={img} className='h-10 rounded-full' />
     <div className='flex flex-col'>
       <h2 className='text-lg leading-5 font-semibold'>{name}</h2>

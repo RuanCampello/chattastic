@@ -5,7 +5,7 @@ import './globals.css'
 const urbanist = Urbanist({ weight: ['400', '500', '600'], subsets: ['latin'] })
 
 export const metadata: Metadata = {
-  title: 'Chattstic',
+  title: 'Chattastic',
   description: 'Chat app',
 }
 
