@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { Urbanist } from 'next/font/google'
 import './globals.css'
+import { AuthContextProvider } from '@/context/AuthContext'
 
 const urbanist = Urbanist({ weight: ['400', '500', '600'], subsets: ['latin'] })
 
@@ -16,7 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang='en'>
-      <body className={urbanist.className}>{children}</body>
+      <AuthContextProvider>
+        <body className={urbanist.className}>{children}</body>
+      </AuthContextProvider>
     </html>
   )
 }

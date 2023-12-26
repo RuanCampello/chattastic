@@ -7,9 +7,11 @@ import { useState } from 'react'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
 import Link from 'next/link'
+import { useNavigate } from 'react-router-dom'
 
 export default function Register() {
   const [error, setError] = useState(false)
+  const navigate = useNavigate()
 
   async function checkUsernameExists(username: string): Promise<boolean> {
     const usernameQuery = await getDocs(query(collection(db, 'users'), where('username', '==', username)))
@@ -50,6 +52,7 @@ export default function Register() {
             username,
           })
           await setDoc(doc(db, 'userChats', response.user.uid), {})
+          navigate('/')
         })
       })
     } catch (error) {
