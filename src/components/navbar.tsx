@@ -42,7 +42,7 @@ export default function Navbar() {
         </div>
       ) : (
         // loaded content
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-4'> 
           <img
             src={currentUser.photoURL}
             title={currentUser.displayName}
@@ -55,7 +55,7 @@ export default function Navbar() {
           </div>
         </div>
       )}
-      {!isLoading && !error && (
+      {!isLoading && (
         <button
           onClick={() => signOut(auth)}
           title='Log out'
