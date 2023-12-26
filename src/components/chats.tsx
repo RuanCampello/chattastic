@@ -9,3 +9,18 @@ export default function Chats() {
     </div>
   )
 }
+// import BasicInfo from './basicInfo'
+
+// interface ChatsProps {
+//   img: string
+//   text?: string
+//   name: string
+// }
+
+// export default function Chats({img, name, text}: ChatsProps) {
+//   return (
+//     <div className='hover:bg-jet p-4 py-3 rounded-xl cursor-pointer'>
+//       <BasicInfo img={img} name={name} text={text}/>
+//     </div>
+//   )
+// }

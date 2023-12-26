@@ -1,6 +1,6 @@
-import Chats from './chats';
-import Navbar from './navbar';
-import SearchBar from './searchbar';
+import Chats from './chats'
+import Navbar from './navbar'
+import SearchBar from './searchbar'
 
 export default function Sidebar() {
   return (
