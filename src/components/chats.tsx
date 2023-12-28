@@ -1,26 +1,45 @@
+import { useContext, useEffect, useState } from 'react'
 import BasicInfo from './basicInfo'
+import { doc, onSnapshot } from 'firebase/firestore'
+import { db } from '@/firebase'
+import { AuthContext } from '@/context/AuthContext'
+import { ChatContext } from '@/context/ChatContext'
 
 export default function Chats() {
-  const placeholder = 'https://static.vecteezy.com/system/resources/previews/021/548/095/non_2x/default-profile-picture-avatar-user-avatar-icon-person-icon-head-icon-profile-picture-icons-default-anonymous-user-male-and-female-businessman-photo-placeholder-social-network-avatar-portrait-free-vector.jpg'
+  const [chats, setChats] = useState([])
+  const { currentUser } = useContext(AuthContext)
+  const { dispatch } = useContext(ChatContext)
+
+  useEffect(() => {
+    function getChats() {
+      const unsub = onSnapshot(doc(db, 'userChats', currentUser.uid), (doc) => {
+        if(doc.exists()) {
+          const userData = doc.data() as []
+          setChats(userData)
+        }
+      })
+      return () => unsub()
+    }
+    currentUser.uid && getChats()
+  }, [currentUser.uid])
+
+  function handleSelectUser(user: any) {
+    dispatch({type:'CHANGE_USER', payload: user})
+  }
+
   return (
-    <div className='hover:bg-jet p-4 py-3 rounded-xl cursor-pointer'>
-      <BasicInfo img={placeholder} name='John' text='
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Nam sint minima pariatur, maxime similique quos unde molestiae incidunt placeat aliquid consequatur odit dolore doloremque eligendi illo quidem laboriosam. Inventore, nobis.'/>
+    <div>
+      {
+        Object.entries(chats)?.map((chat) => {
+          if(chat[1] && chat[1]['userInfo']) {
+            return (
+              <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className='hover:bg-jet p-4 py-3 rounded-xl cursor-pointer'>
+              <BasicInfo img={chat[1]['userInfo']['photoURL']} name={chat[1]['userInfo']['displayName']} text={''}/>
+            </div>
+            )
+          }
+        })
+      }
     </div>
   )
 }
-// import BasicInfo from './basicInfo'
-
-// interface ChatsProps {
-//   img: string
-//   text?: string
-//   name: string
-// }
-
-// export default function Chats({img, name, text}: ChatsProps) {
-//   return (
-//     <div className='hover:bg-jet p-4 py-3 rounded-xl cursor-pointer'>
-//       <BasicInfo img={img} name={name} text={text}/>
-//     </div>
-//   )
-// }

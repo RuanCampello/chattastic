@@ -1,6 +1,6 @@
 'use client'
 import InputSection from '@/components/inputSection'
-import { ImageSquare } from '@phosphor-icons/react'
+import { Eye, EyeClosed, ImageSquare } from '@phosphor-icons/react'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { auth, db, storage } from '@/firebase'
 import { useState } from 'react'
@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
 export default function Register() {
+  const [isVisible, setIsVisible] = useState(false)
   const [error, setError] = useState(false)
   const router = useRouter()
 
@@ -67,7 +68,12 @@ export default function Register() {
           <InputSection name='name' placeholder='Name'/>
           <InputSection name='username' placeholder='Username'/>
           <InputSection type='email' name='email' placeholder='E-mail'/>
-          <InputSection name='password' placeholder='Password' type='password'/>
+          <div className='flex items-center w-full relative'>
+            <input className='p-3 bg-slate-200 w-full focus:outline-none' type={isVisible ? 'text' : 'password'} name='password' placeholder='Password' />
+            <div onClick={e => setIsVisible(!isVisible)} className='absolute right-1 cursor-pointer hover:bg-slate-300 rounded-full p-2' >
+              {isVisible ? <Eye weight='duotone' size={24}/> : <EyeClosed weight='duotone' size={24}/>}
+            </div>
+          </div>
           <input className='hidden' name='photo' type='file' id='file'/>
           <label className='cursor-pointer flex items-center text-sm gap-1' htmlFor='file'>
             <ImageSquare weight='duotone' size={32}/>

@@ -10,7 +10,7 @@ export default function Home() {
   const router = useRouter()
 
   useEffect(() => {
-    if (currentUser) router.replace('/login')
+    if (!currentUser) router.replace('/login')
   }, [currentUser])
 
   return (

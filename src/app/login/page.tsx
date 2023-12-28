@@ -1,12 +1,14 @@
 'use client'
 import InputSection from '@/components/inputSection'
 import { auth } from '@/firebase'
+import { Eye, EyeClosed } from '@phosphor-icons/react'
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
 export default function Login() {
+  const [isVisible, setIsVisible] = useState(false)
   const [error, setError] = useState(false)
   const router = useRouter()
 
@@ -17,7 +19,7 @@ export default function Login() {
     const password = e.target.password.value
     try {
       await signInWithEmailAndPassword(auth, email, password)
-      router.push('/')
+      router.replace('/')
     } catch (error) {
       setError(true)
     }
@@ -28,7 +30,12 @@ export default function Login() {
         <h1 className='text-3xl font-bold mb-8 self-center'>Login</h1>
         <div className='flex flex-col gap-4'>
           <InputSection name='email' placeholder='E-mail'/>
-          <InputSection name='password' placeholder='Password' type='password'/>
+          <div className='flex items-center w-full relative'>
+            <input className='p-3 bg-slate-200 w-full focus:outline-none' type={isVisible ? 'text' : 'password'} name='password' placeholder='Password' />
+            <div onClick={e => setIsVisible(!isVisible)} className='absolute right-1 cursor-pointer hover:bg-slate-300 rounded-full p-2' >
+              {isVisible ? <Eye weight='duotone' size={24}/> : <EyeClosed weight='duotone' size={24}/>}
+            </div>
+          </div>
         </div>
         <button type='submit' className='bg-savoy-blue text-slate-50 hover:bg-ultra-violet w-full text-lg font-bold h-auto p-2 rounded-full mt-4 self-center'>
           Login

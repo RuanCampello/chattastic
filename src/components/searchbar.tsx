@@ -1,44 +1,120 @@
 import { db } from '@/firebase'
-import { collection, getDocs, query, where } from 'firebase/firestore'
-import { FormEvent, useState } from 'react'
+import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore'
+import { FormEvent, useContext, useEffect, useState } from 'react'
 import BasicInfo from './basicInfo'
-import Chats from './chats'
+import { AuthContext } from '@/context/AuthContext'
+import { MagnifyingGlass } from '@phosphor-icons/react'
+import { ChatContext } from '@/context/ChatContext'
 
-type UserData = {
+export type UserData = {
+  uid: string
   name: string
   username: string
   photoURL: string
 }
 
 export default function SearchBar() {
+  const { currentUser } = useContext(AuthContext)
+  const { dispatch } = useContext(ChatContext)
   const [queryInput, setQuery] = useState(String)
-  const [user, setUser] = useState<UserData>()
+  const [user, setUser] = useState<UserData | null>(null)
+  const [username, setUsername] = useState(String)
   const [error, setError] = useState(false)
+
+  useEffect(() => {
+    async function getUsername() {
+      try {
+        if(currentUser && currentUser.email) {
+          const usernameQuery = await getDocs(query(collection(db, 'users'), where('email', '==', currentUser.email)))
+          if(usernameQuery.docs.length > 0) {
+            const userData = usernameQuery.docs[0].data()
+            setUsername(userData.username)
+          }
+        }
+      } catch(error) {
+        console.log(error);
+        
+        setError(true)
+      }
+    }
+    getUsername()
+  }, [currentUser])
+
+  async function handleClick() {
+    if(user) {
+      const combinedId = currentUser.uid + user.uid
+
+      console.log(combinedId)
+      console.log('target'+user.uid)
+      console.log('current:'+currentUser.uid)
+      
+      
+      try {
+        const response = await getDoc(doc(db, 'chats', combinedId))
+        if(!response.exists()) {
+          await setDoc(doc(db,'chats',combinedId), {messages: []})
+          //create user chats
+          await updateDoc(doc(db, 'userChats', currentUser.uid),{
+            [combinedId + '.userInfo']: {
+              uid:user?.uid,
+              displayName: user?.username,
+              photoURL: user?.photoURL
+            },
+            [combinedId+'.date']: serverTimestamp(),
+          })
+          await updateDoc(doc(db, 'userChats', user.uid),{
+            [combinedId + '.userInfo']: {
+              uid:currentUser.uid,
+              displayName: currentUser.username,
+              photoURL: currentUser.photoURL
+            },
+            [combinedId + '.date']: serverTimestamp(),
+          })
+        }
+      } catch (error) {}
+    }
+    setUser(null)
+  }
+
+  function handleSelection(user: any) {
+    dispatch({type: 'CHANGE_USER', payload: user})
+  }
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     handleSearch()
+    setQuery('')
   }
   async function handleSearch() {
-    const q = query(collection(db, 'users'), where('username', '==', queryInput))
-
-    try {
+    //verify if the user is not searching for himself
+    if(username === queryInput.trim()) {
+      setUser(null)
+      return
+    }
+    const q = query(collection(db, 'users'), where('username', '==', queryInput.trim()))
+    try { 
       const querySnapshot = await getDocs(q)
-      querySnapshot.forEach((doc) => {
-        setUser(doc.data() as UserData)
-        console.log(doc.data())
-      })
+      if(!querySnapshot.empty) {
+        querySnapshot.forEach((doc) => {
+          setUser(doc.data() as UserData)
+        })
+      } else setUser(null)
     } catch (error) {
-      setError(true)
+      setError(true)   
     }
   }
+  
   return (
     <div>
-      <form onSubmit={handleSubmit} className='my-4'>
-        <input onChange={e => setQuery(e.target.value)} className='w-full rounded-xl focus:outline-none px-3 py-2 bg-jet placeholder:text-neutral-400' type='text' placeholder='search user...' />
+      <form onSubmit={handleSubmit} className='my-4 flex items-center bg-jet rounded-xl w-full text-neutral-300'>
+        <MagnifyingGlass size={18} className='text-neutral-500 ml-3' />
+        <input value={queryInput} onChange={e => setQuery(e.target.value)} className='w-full rounded-xl focus:outline-none p-2 placeholder:text-neutral-500 leading-4 bg-jet' type='text' placeholder='search user...' />
       </form>
       {user && 
-        <div className='hover:bg-jet border border-neon-blue p-4 py-3 rounded-xl cursor-pointer mb-2'>
+        <div onClick={() => {
+          handleClick()
+          handleSelection(user)
+        }} className='hover:bg-jet border border-neon-blue p-4 py-3 rounded-xl cursor-pointer mb-2'>
         <BasicInfo img={user.photoURL} name={user.name} />
         </div>
       } 

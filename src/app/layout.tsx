@@ -2,12 +2,13 @@ import type { Metadata } from 'next'
 import { Urbanist } from 'next/font/google'
 import './globals.css'
 import { AuthContextProvider } from '@/context/AuthContext'
+import { ChatContextProvider } from '@/context/ChatContext'
 
 const urbanist = Urbanist({ weight: ['400', '500', '600'], subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Chattastic',
-  description: 'Chat app',
+  description: 'Real-time chat app',
 }
 
 export default function RootLayout({
@@ -18,7 +19,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <AuthContextProvider>
-        <body className={urbanist.className}>{children}</body>
+        <ChatContextProvider>
+          <body className={urbanist.className}>{children}</body>
+        </ChatContextProvider>
       </AuthContextProvider>
     </html>
   )

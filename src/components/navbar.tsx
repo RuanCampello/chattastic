@@ -47,7 +47,7 @@ export default function Navbar() {
             src={currentUser.photoURL}
             title={currentUser.displayName}
             alt={currentUser.displayName}
-            className='h-12 w-12 rounded-full'
+            className='h-12 w-12 rounded-full object-cover'
           />
           <div className='flex flex-col gap-1'>
             <h2 className='text-lg text-start font-medium leading-4'>{currentUser.displayName}</h2>
