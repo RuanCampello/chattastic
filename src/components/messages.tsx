@@ -17,12 +17,45 @@ export default function Messages() {
       }
     })
     return () => unsub()
-  }, [data.chatId])  
+  }, [data.chatId])
+  
+  function formatMessageTime(date: Date) {
+    const now = new Date()
+    const diffInMilliseconds = now.getTime() - date.getTime()
+    const diffInMinutes = Math.floor(diffInMilliseconds / (60 * 1000))
+  
+    if (diffInMinutes <= 1) {
+      return 'Just now'
+    } else if (
+      date.getDate() === now.getDate() &&
+      date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear()
+    ) {
+      // Today
+      return `Today at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+    } else if (
+      date.getDate() === now.getDate() - 1 &&
+      date.getMonth() === now.getMonth() &&
+      date.getFullYear() === now.getFullYear()
+    ) {
+      // yesterday
+      return `Yesterday at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+    } else {
+      // older than yesterday
+      return `${date.toLocaleDateString()} at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+    }
+  }
+
   return (
     <div className='space-y-2 px-4 mt-4 w-full'>
-      {messages.map((ms, index) => (
-        <Message owner={ms['senderId'] === currentUser.uid} key={index} text={ms['text']}/>
-      ))}
+      {messages.map((ms, index) => {
+        const timestamp = ms['date']['seconds']
+        const date = new Date(timestamp*1000)
+        return (
+          <Message owner={ms['senderId'] === currentUser.uid} key={index} text={ms['text']} time={formatMessageTime(date)}/>
+        )
+      })
+      }
     </div>
   )
 }

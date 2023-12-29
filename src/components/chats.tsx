@@ -7,12 +7,13 @@ import { ChatContext } from '@/context/ChatContext'
 
 type ChatType = {
   [chatId: string]: {
-  userInfo: {
+    userInfo: {
       photoURL?: string
       displayName: string
     }
-    lastMessage?: {
-      text: string;
+    date: {
+      seconds: number
+      nanoseconds: number
     }
   }
 }
@@ -38,7 +39,6 @@ export default function Chats() {
   function handleSelectUser(user: any) {
     dispatch({ type:'CHANGE_USER', payload: user })
   }
-
   return (
     <div>
       {
@@ -46,7 +46,7 @@ export default function Chats() {
           if(chat[1] && chat[1]['userInfo']) {
             return (
               <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className='hover:bg-jet p-4 py-3 rounded-xl cursor-pointer'>
-              <BasicInfo img={chat[1]['userInfo']['photoURL']} name={chat[1]['userInfo']['displayName']} lastMessage={''}/>
+              <BasicInfo img={chat[1]['userInfo']['photoURL']} name={chat[1]['userInfo']['displayName']}/>
             </div>
             )
           }

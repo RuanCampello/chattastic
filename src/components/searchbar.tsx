@@ -32,7 +32,7 @@ export default function SearchBar() {
           }
         }
       } catch(error) {
-        console.log(error)
+        console.error(error)
         setError(true)
       }
     }
@@ -40,7 +40,6 @@ export default function SearchBar() {
   }, [currentUser])
   
   async function handleClick() {
-    console.log(user?.name);
     if(user && currentUser) { 
       const combinedId =
       currentUser.uid > user.uid
