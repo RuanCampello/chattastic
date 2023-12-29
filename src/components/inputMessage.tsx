@@ -17,20 +17,24 @@ export default function InputMessage() {
 
   async function handleClick(e: any) {
     e.preventDefault()
-    
-    if(file) {
+  
+    if (file) {
       const storageRef = ref(storage, uuid())
       const uploadTask = uploadBytesResumable(storageRef, file)
-
+  
       uploadTask.on('state_changed', () => {
-        getDownloadURL(uploadTask.snapshot.ref).then(async(downloadURL) => {
+
+      }, (error) => {
+        console.error('error during upload:', error)
+      }, async() => {
+        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
           await updateDoc(doc(db, 'chats', data.chatId), {
             messages: arrayUnion({
               id: uuid(),
               text,
               senderId: currentUser.uid,
               date: Timestamp.now(),
-              img: downloadURL
+              img: downloadURL,
             })
           })
         })
@@ -41,24 +45,12 @@ export default function InputMessage() {
           id: uuid(),
           text,
           senderId: currentUser.uid,
-          date: Timestamp.now()
+          date: Timestamp.now(),
         })
       })
     }
-    // await updateDoc(doc(db, 'userChats', currentUser.uid), {
-    //   [data.chatId + '.lastMessage']: {
-    //     text,
-    //   },
-    //   [data.chatId + '.date']: serverTimestamp()
-    // })
-    // await updateDoc(doc(db, 'userChats', data.user.uid), {
-    //   [data.chatId + '.lastMessage']: {
-    //     text,
-    //   },
-    //   [data.chatId + '.date']: serverTimestamp()
-    // })
-  setText('')
-  setFile(null)
+    setText('')
+    setFile(null)
   }
   return (
     <div className='p-[14px]' >

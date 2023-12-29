@@ -26,7 +26,7 @@ export default function Messages() {
       const { scrollHeight, clientHeight } = chatContainerRef.current
       chatContainerRef.current.scrollTop = scrollHeight - clientHeight
     }
-  }, [messages]);
+  }, [messages])
   
   function formatMessageTime(date: Date) {
     const now = new Date()
