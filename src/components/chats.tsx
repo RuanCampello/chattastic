@@ -42,7 +42,9 @@ export default function Chats() {
   return (
     <div>
       {
-        Object.entries(chats)?.map((chat) => {
+        Object.entries(chats).sort((a,b) => a[1]['date']['seconds'] - b['1']['date']['seconds']).map((chat) => {
+          console.log(chat[1].date.seconds);
+          
           if(chat[1] && chat[1]['userInfo']) {
             return (
               <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className='hover:bg-jet p-4 py-3 rounded-xl cursor-pointer'>

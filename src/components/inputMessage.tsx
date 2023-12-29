@@ -56,8 +56,9 @@ export default function InputMessage() {
     //     text,
     //   },
     //   [data.chatId + '.date']: serverTimestamp()
-    // })    
+    // })
   setText('')
+  setFile(null)
   }
   return (
     <div className='p-[14px]' >

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useRef, useState } from 'react'
 import Message from './message'
 import { ChatContext } from '@/context/ChatContext'
 import { doc, onSnapshot } from 'firebase/firestore'
@@ -9,6 +9,7 @@ export default function Messages() {
   const [messages, setMessages] = useState([])
   const { data } = useContext(ChatContext)
   const { currentUser } = useContext(AuthContext)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     const unsub = onSnapshot(doc(db, 'chats', data.chatId), (doc) => {
@@ -18,6 +19,14 @@ export default function Messages() {
     })
     return () => unsub()
   }, [data.chatId])
+
+  useEffect(() => {
+    // scroll to the bottom of the chat when messages change
+    if (chatContainerRef.current) {
+      const { scrollHeight, clientHeight } = chatContainerRef.current
+      chatContainerRef.current.scrollTop = scrollHeight - clientHeight
+    }
+  }, [messages]);
   
   function formatMessageTime(date: Date) {
     const now = new Date()
@@ -47,12 +56,12 @@ export default function Messages() {
   }
 
   return (
-    <div className='space-y-2 px-4 mt-4 w-full'>
+    <div ref={chatContainerRef} className='space-y-2 px-4 mt-4 w-full'>
       {messages.map((ms, index) => {
         const timestamp = ms['date']['seconds']
         const date = new Date(timestamp*1000)
         return (
-          <Message owner={ms['senderId'] === currentUser.uid} key={index} text={ms['text']} time={formatMessageTime(date)}/>
+          <Message owner={ms['senderId'] === currentUser.uid} key={index} text={ms['text']} time={formatMessageTime(date)} imgURL={ms['img']}/>
         )
       })
       }
