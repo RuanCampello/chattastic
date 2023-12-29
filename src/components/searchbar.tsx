@@ -106,8 +106,8 @@ export default function SearchBar() {
   return (
     <div>
       <form onSubmit={handleSubmit} className='my-4 flex items-center bg-jet rounded-xl w-full text-neutral-300'>
-        <MagnifyingGlass size={18} className='text-neutral-500 ml-3' />
-        <input value={queryInput} onChange={e => setQuery(e.target.value)} className='w-full rounded-xl focus:outline-none p-2 placeholder:text-neutral-500 leading-4 bg-jet' type='text' placeholder='search user...' />
+        <MagnifyingGlass size={18} className='text-neutral-400 ml-3' />
+        <input value={queryInput} onChange={e => setQuery(e.target.value)} className='w-full rounded-xl focus:outline-none p-2 placeholder:text-neutral-400 leading-4 bg-jet' type='text' placeholder='search user...' />
       </form>
       {user && 
         <div onClick={() => {

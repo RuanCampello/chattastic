@@ -10,6 +10,7 @@ export default function Messages() {
   const { data } = useContext(ChatContext)
   const { currentUser } = useContext(AuthContext)
   const chatContainerRef = useRef<HTMLDivElement>(null)
+  const [prevMessageIsLast, setPrevMessageIsLast] = useState(false)
 
   useEffect(() => {
     const unsub = onSnapshot(doc(db, 'chats', data.chatId), (doc) => {
@@ -54,14 +55,30 @@ export default function Messages() {
       return `${date.toLocaleDateString()} at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
     }
   }
-
   return (
-    <div ref={chatContainerRef} className='space-y-2 px-4 mt-4 w-full'>
+    <div ref={chatContainerRef} className='px-4 mt-4 w-full'>
       {messages.map((ms, index) => {
         const timestamp = ms['date']['seconds']
         const date = new Date(timestamp*1000)
+
+        const isLastMessage =
+        index === messages.length - 1 ||
+        (index > 0 &&(messages[index + 1]['senderId'] !== ms['senderId'] ||
+        date.getTime() - new Date(messages[index - 1]['date']['seconds'] * 1000).getTime() > 5 * 60 * 1000)) ||
+        ms['img'] || false
         return (
-          <Message owner={ms['senderId'] === currentUser.uid} key={index} text={ms['text']} time={formatMessageTime(date)} imgURL={ms['img']}/>
+          <div 
+           key={index} 
+           className={`${isLastMessage && 'mb-4'}  my-1`}
+          >
+            <Message 
+             owner={ms['senderId'] === currentUser.uid} 
+             text={ms['text']} 
+             time={formatMessageTime(date)} 
+             imgURL={ms['img']}
+             isLastMessage={isLastMessage}
+             />
+          </div>
         )
       })
       }

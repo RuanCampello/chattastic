@@ -11,10 +11,7 @@ type ChatType = {
       photoURL?: string
       displayName: string
     }
-    date: {
-      seconds: number
-      nanoseconds: number
-    }
+    date: number
   }
 }
 
@@ -42,16 +39,12 @@ export default function Chats() {
   return (
     <div>
       {
-        Object.entries(chats).sort((a,b) => a[1]['date']['seconds'] - b['1']['date']['seconds']).map((chat) => {
-          console.log(chat[1].date.seconds);
-          
-          if(chat[1] && chat[1]['userInfo']) {
-            return (
-              <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className='hover:bg-jet p-4 py-3 rounded-xl cursor-pointer'>
-              <BasicInfo img={chat[1]['userInfo']['photoURL']} name={chat[1]['userInfo']['displayName']}/>
-            </div>
-            )
-          }
+        Object.entries(chats)?.sort((a,b) => b[1].date - a[1].date).map((chat) => {
+          return (
+            <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className='hover:bg-jet p-4 py-3 rounded-xl cursor-pointer'>
+            <BasicInfo img={chat[1]['userInfo']['photoURL']} name={chat[1]['userInfo']['displayName']}/>
+          </div>
+          )
         })
       }
     </div>
