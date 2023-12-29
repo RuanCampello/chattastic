@@ -13,10 +13,7 @@ export default function InputMessage() {
   const [file, setFile] = useState<File | null>()
 
   const { data } = useContext(ChatContext)
-  const { currentUser } = useContext(AuthContext)
-
-  console.log(data.chatId);
-  
+  const { currentUser } = useContext(AuthContext)  
 
   async function handleClick(e: any) {
     e.preventDefault()
@@ -48,18 +45,18 @@ export default function InputMessage() {
         })
       })
     // }
-    await updateDoc(doc(db, 'userChats', currentUser.uid), {
-      [data.chatId + '.lastMessage']: {
-        text,
-      },
-      [data.chatId + '.date']: serverTimestamp()
-    })
-    await updateDoc(doc(db, 'userChats', data.user.uid), {
-      [data.chatId + '.lastMessage']: {
-        text,
-      },
-      [data.chatId + '.date']: serverTimestamp()
-    })    
+    // await updateDoc(doc(db, 'userChats', currentUser.uid), {
+    //   [data.chatId + '.lastMessage']: {
+    //     text,
+    //   },
+    //   [data.chatId + '.date']: serverTimestamp()
+    // })
+    // await updateDoc(doc(db, 'userChats', data.user.uid), {
+    //   [data.chatId + '.lastMessage']: {
+    //     text,
+    //   },
+    //   [data.chatId + '.date']: serverTimestamp()
+    // })    
   setText('')
   }
   return (

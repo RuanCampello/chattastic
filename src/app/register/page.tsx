@@ -68,7 +68,7 @@ export default function Register() {
         <h1 className='text-3xl font-bold mb-8 self-center'>Register</h1>
         <div className='flex flex-col gap-4'>
           <InputSection name='name' placeholder='Name'/>
-          <InputSection name='username' placeholder='Username'/>
+          <InputSection type='text' name='username' placeholder='Username'/>
           <InputSection type='email' name='email' placeholder='E-mail'/>
           <div className='flex items-center w-full relative'>
             <input className='p-3 bg-slate-200 w-full focus:outline-none' type={isVisible ? 'text' : 'password'} name='password' placeholder='Password' />

@@ -38,37 +38,39 @@ export default function SearchBar() {
     }
     getUsername()
   }, [currentUser])
-
+  
   async function handleClick() {
-    if(user && currentUser) {
+    console.log(user?.name);
+    if(user && currentUser) { 
       const combinedId =
       currentUser.uid > user.uid
         ? currentUser.uid + user.uid
-        : user.uid + currentUser.uid;
+        : user.uid + currentUser.uid
       try {
-        const response = await getDoc(doc(db, 'chats', combinedId))
-
-        if(!response.exists()) {
-          await setDoc(doc(db,'chats',combinedId), {messages: []})
-          
-          //create user chats
-          await updateDoc(doc(db, 'userChats', currentUser.uid), {
-            [combinedId + '.userInfo']: {
-              uid: user.uid,
-              displayName: user.username,
-              photoURL: user.photoURL,
-            },
-            [combinedId + '.date']: serverTimestamp(),
-          })
-          await updateDoc(doc(db, 'userChats', user.uid), {
-            [combinedId + '.userInfo']: {
-              uid:currentUser.uid,
-              displayName: currentUser.username,
-              photoURL: currentUser.photoURL,
-            },
-            [combinedId + '.date']: serverTimestamp(),
-          })
-        }
+        const chat = await getDoc(doc(db, 'chats', combinedId))
+        if(chat.exists()) {
+          setUser(null)
+          return
+        } 
+        // First updateDoc call
+        await setDoc(doc(db, 'chats', combinedId), { messages: [] })
+        await updateDoc(doc(db, 'userChats', currentUser.uid), {
+          [combinedId + '.userInfo']: {
+            uid: user.uid,
+            displayName: user.name,
+            photoURL: user.photoURL,
+          },
+          [combinedId + '.date']: serverTimestamp(),
+        })
+        // Second updateDoc call
+        await updateDoc(doc(db, 'userChats', user?.uid), {
+          [combinedId + '.userInfo']: {
+            uid: currentUser.uid,
+            displayName: currentUser.displayName,
+            photoURL: currentUser.photoURL,
+          },
+          [combinedId + '.date']: serverTimestamp(),
+        })
       } catch (error) {}
     }
     setUser(null)
