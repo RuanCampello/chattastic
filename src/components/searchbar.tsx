@@ -32,8 +32,7 @@ export default function SearchBar() {
           }
         }
       } catch(error) {
-        console.log(error);
-        
+        console.log(error)
         setError(true)
       }
     }
@@ -41,32 +40,31 @@ export default function SearchBar() {
   }, [currentUser])
 
   async function handleClick() {
-    if(user) {
-      const combinedId = currentUser.uid + user.uid
-
-      console.log(combinedId)
-      console.log('target'+user.uid)
-      console.log('current:'+currentUser.uid)
-      
-      
+    if(user && currentUser) {
+      const combinedId =
+      currentUser.uid > user.uid
+        ? currentUser.uid + user.uid
+        : user.uid + currentUser.uid;
       try {
         const response = await getDoc(doc(db, 'chats', combinedId))
+
         if(!response.exists()) {
           await setDoc(doc(db,'chats',combinedId), {messages: []})
+          
           //create user chats
-          await updateDoc(doc(db, 'userChats', currentUser.uid),{
+          await updateDoc(doc(db, 'userChats', currentUser.uid), {
             [combinedId + '.userInfo']: {
-              uid:user?.uid,
-              displayName: user?.username,
-              photoURL: user?.photoURL
+              uid: user.uid,
+              displayName: user.username,
+              photoURL: user.photoURL,
             },
-            [combinedId+'.date']: serverTimestamp(),
+            [combinedId + '.date']: serverTimestamp(),
           })
-          await updateDoc(doc(db, 'userChats', user.uid),{
+          await updateDoc(doc(db, 'userChats', user.uid), {
             [combinedId + '.userInfo']: {
               uid:currentUser.uid,
               displayName: currentUser.username,
-              photoURL: currentUser.photoURL
+              photoURL: currentUser.photoURL,
             },
             [combinedId + '.date']: serverTimestamp(),
           })
@@ -112,9 +110,10 @@ export default function SearchBar() {
       </form>
       {user && 
         <div onClick={() => {
-          handleClick()
           handleSelection(user)
-        }} className='hover:bg-jet border border-neon-blue p-4 py-3 rounded-xl cursor-pointer mb-2'>
+          handleClick()
+        }}
+        className='hover:bg-jet border border-neon-blue p-4 py-3 rounded-xl cursor-pointer mb-2'>
         <BasicInfo img={user.photoURL} name={user.name} />
         </div>
       } 

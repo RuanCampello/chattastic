@@ -1,10 +1,11 @@
 interface BasicInfoProps {
   name: string
+  username?: string
   img?: string
-  text?: string
+  lastMessage?: string
 }
 
-export default function BasicInfo({name, img, text}: BasicInfoProps) {
+export default function BasicInfo({name, img, lastMessage, username}: BasicInfoProps) {  
   return (
   <div className='flex items-center gap-3'>
     {img &&
@@ -12,8 +13,11 @@ export default function BasicInfo({name, img, text}: BasicInfoProps) {
     }
     <div className='flex flex-col'>
       <h2 className='text-lg leading-5 font-semibold'>{name}</h2>
+      {username &&
+      <h3 className='leading-3 text-neon-blue font-bold'>{`@${username}`}</h3>}
+      {/* why is not showing? */}
       <p className='line-clamp-1 text-sm font-medium text-neutral-400'>
-        {text}
+        {lastMessage}
       </p>
     </div>
   </div>

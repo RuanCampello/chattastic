@@ -35,11 +35,12 @@ export default function Register() {
     }
     try {
       const response = await createUserWithEmailAndPassword(auth, email, password)
-      const storageRef = ref(storage, name)
-      const uploadTask = uploadBytesResumable(storageRef, photo)
+      const date = new Date().getTime()
+      const storageRef = ref(storage, `${name}+${date}`)
 
-      uploadTask.on('state_changed', () => {
-        getDownloadURL(uploadTask.snapshot.ref).then(async(downloadURL) => {
+      await uploadBytesResumable(storageRef, photo).then(() => {
+      getDownloadURL(storageRef).then(async(downloadURL) => {
+        try {
           await updateProfile(response.user, {
             displayName: name,
             photoURL: downloadURL
@@ -52,7 +53,8 @@ export default function Register() {
             username,
           })
           await setDoc(doc(db, 'userChats', response.user.uid), {})
-          router.push('/')
+          router.replace('/')
+        } catch (error) {}
         })
       })
     } catch (error) {
