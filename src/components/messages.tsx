@@ -64,7 +64,7 @@ export default function Messages() {
         const isLastMessage =
         index === messages.length - 1 ||
         (index > 0 &&(messages[index + 1]['senderId'] !== ms['senderId'] ||
-        date.getTime() - new Date(messages[index - 1]['date']['seconds'] * 1000).getTime() > 5 * 60 * 1000)) ||
+        date.getTime() - new Date(messages[index - 1]['date']['seconds'] * 1000).getTime() > 5 * 60 * 1000)) || index === 0 ||
         ms['img'] || false
         return (
           <div 

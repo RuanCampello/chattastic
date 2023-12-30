@@ -19,7 +19,10 @@ const config: Config = {
         'neon-blue': '#5B68F1',
         'jet': '#2B2D31',
         'gunmetal': '#303440',
-        'eerie-black': '#1E1F22'
+        'eerie-black': '#1E1F22',
+        'imperial-red': '#F23F43',
+        'xanthous': '#F0B232',
+        'pigment-green': '#23A55A'
       }
     },
   },

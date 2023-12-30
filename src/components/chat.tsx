@@ -10,7 +10,7 @@ export default function Chat() {
     <div className='w-2/3 2xl:w-3/4 2xl:rounded-r-lg p-2 pb-0 flex flex-col'>
       <div className='flex flex-col flex-1 overflow-hidden'>
         <div className='border-b-2 border-eerie-black p-4 sticky top-0 bg-jet'>
-          <BasicInfo name={data.user.displayName || data.user.name} img={data.user.photoURL} />
+          <BasicInfo name={data.user.displayName || data.user.name} img={data.user.photoURL} activity={data.user.status}/>
         </div>
         <div className='overflow-y-scroll flex'>
           <Messages />
