@@ -71,7 +71,7 @@ export default function InputMessage() {
           <label className='cursor-pointer hover:bg-jet p-2 rounded-full transition duration-500 ease-in-out' htmlFor='file'>
             <Image size={28} weight='duotone' />
           </label>
-          <button disabled={text === '' && file === null} onClick={handleClick} className='hover:bg-jet p-2 rounded-full transition duration-500 ease-in-out'>
+          <button disabled={text.trim() === '' && file === null} onClick={handleClick} className='hover:bg-jet p-2 rounded-full transition duration-500 ease-in-out'>
             <PaperPlaneRight size={28} weight='duotone' />
           </button>
         </div>
