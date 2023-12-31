@@ -4,6 +4,7 @@ import { ChatContext } from '@/context/ChatContext'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { db } from '@/firebase'
 import { AuthContext } from '@/context/AuthContext'
+import { formatTime } from '@/utils'
 
 export default function Messages() {
   const [messages, setMessages] = useState([])
@@ -25,33 +26,6 @@ export default function Messages() {
       chatContainerRef.current.scrollTop = scrollHeight - clientHeight
     }
   }, [messages])
-  
-  function formatMessageTime(date: Date) {
-    const now = new Date()
-    const diffInMilliseconds = now.getTime() - date.getTime()
-    const diffInMinutes = Math.floor(diffInMilliseconds / (60 * 1000))
-  
-    if (diffInMinutes <= 1) {
-      return 'Just now'
-    } else if (
-      date.getDate() === now.getDate() &&
-      date.getMonth() === now.getMonth() &&
-      date.getFullYear() === now.getFullYear()
-    ) {
-      // Today
-      return `Today at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-    } else if (
-      date.getDate() === now.getDate() - 1 &&
-      date.getMonth() === now.getMonth() &&
-      date.getFullYear() === now.getFullYear()
-    ) {
-      // yesterday
-      return `Yesterday at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-    } else {
-      // older than yesterday
-      return `${date.toLocaleDateString()} at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
-    }
-  }
   return (
     <div ref={chatContainerRef} className='px-4 mt-4 w-full overflow-y-auto scrollbar scrollbar-w-3 scrollbar-track-neutral-800 scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg'>
       {messages.map((ms, index) => {
@@ -71,7 +45,7 @@ export default function Messages() {
             <Message 
              owner={ms['senderId'] === currentUser.uid} 
              text={ms['text']} 
-             time={formatMessageTime(date)} 
+             time={formatTime(date)} 
              imgURL={ms['img']}
              isLastMessage={isLastMessage}
              />

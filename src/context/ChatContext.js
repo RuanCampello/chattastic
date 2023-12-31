@@ -34,10 +34,13 @@ export const ChatContextProvider = ({ children }) => {
       const userDocRef = doc(db, 'users', state.user.uid)
       const unsubscribe = onSnapshot(userDocRef, (userDoc) => {
         const data = userDoc.data()
-        const userStatus = data ? data.status || 'offline' : 'offline'
+        const userStatus = data ? data.status : 'offline'
+        const userLastOnline = data.lastOnline.seconds * 1000
+        console.log(userLastOnline);
         const updatedUser = {
           ...state.user,
           status: userStatus,
+          lastOnline: userLastOnline,
         }
         dispatch({ type: 'CHANGE_USER', payload: updatedUser })
       })
