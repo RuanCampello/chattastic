@@ -7,16 +7,16 @@ import { AuthContext } from '@/context/AuthContext'
 
 export default function Messages() {
   const [messages, setMessages] = useState([])
-  const { data } = useContext(ChatContext)
+  const { userData } = useContext(ChatContext)
   const { currentUser } = useContext(AuthContext)
   const chatContainerRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    const unsub = onSnapshot(doc(db, 'chats', data.chatId), (doc) => {
+    const unsub = onSnapshot(doc(db, 'chats', userData.chatId), (doc) => {
       if(doc.exists()) setMessages(doc.data().messages as [])
     })
     return () => unsub()
-  }, [data.chatId])
+  }, [userData.chatId])
 
   useEffect(() => {
     // scroll to the bottom of the chat when messages change

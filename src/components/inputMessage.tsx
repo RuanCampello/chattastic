@@ -1,10 +1,9 @@
-'use client'
 import { AuthContext } from '@/context/AuthContext'
 import { ChatContext } from '@/context/ChatContext'
 import { db, storage } from '@/firebase'
 import { Image, PaperPlaneRight, Smiley } from '@phosphor-icons/react'
 import Picker from '@emoji-mart/react'
-import * as emojiData from '@emoji-mart/data'
+import data from '@emoji-mart/data'
 import { Timestamp, arrayUnion, doc, updateDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { useContext, useState } from 'react'
@@ -15,7 +14,7 @@ export default function InputMessage() {
   const [file, setFile] = useState<File | null>()
   const [emojiPickerVisible, setEmojiPickerVisible] = useState(false)
 
-  const { data } = useContext(ChatContext)
+  const { userData } = useContext(ChatContext)
   const { currentUser } = useContext(AuthContext)  
 
   function handleEmojiSelection(emoji: any) {
@@ -34,7 +33,7 @@ export default function InputMessage() {
         console.error('error during upload:', error)
       }, async() => {
         getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-          await updateDoc(doc(db, 'chats', data.chatId), {
+          await updateDoc(doc(db, 'chats', userData.chatId), {
             messages: arrayUnion({
               id: uuid(),
               text,
@@ -46,7 +45,7 @@ export default function InputMessage() {
         })
       })
     } else {
-      await updateDoc(doc(db, 'chats', data.chatId), {
+      await updateDoc(doc(db, 'chats', userData.chatId), {
         messages: arrayUnion({
           id: uuid(),
           text,
@@ -92,7 +91,7 @@ export default function InputMessage() {
       <div className='absolute right-[1vw] bottom-[10vh]'>
         {emojiPickerVisible && 
           <Picker 
-           data={emojiData} 
+           data={data} 
            previewPosition={'none'}
            set={'native'}
            emojiSize={32}
