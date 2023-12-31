@@ -11,7 +11,7 @@ export default function Login() {
   const [isVisible, setIsVisible] = useState(false)
   const [error, setError] = useState(false)
   const router = useRouter()
-
+  
   async function handleSubmit(e: any) {
     e.preventDefault()
 
@@ -32,7 +32,7 @@ export default function Login() {
           <InputSection name='email' placeholder='E-mail'/>
           <div className='flex items-center w-full relative'>
             <input className='p-3 bg-slate-200 w-full focus:outline-none' type={isVisible ? 'text' : 'password'} name='password' placeholder='Password' />
-            <div onClick={e => setIsVisible(!isVisible)} className='absolute right-1 cursor-pointer hover:bg-slate-300 rounded-full p-2' >
+            <div onClick={() => setIsVisible(!isVisible)} className='absolute right-1 cursor-pointer hover:bg-slate-300 rounded-full p-2' >
               {isVisible ? <Eye weight='duotone' size={24}/> : <EyeClosed weight='duotone' size={24}/>}
             </div>
           </div>

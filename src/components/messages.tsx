@@ -69,7 +69,7 @@ export default function Messages() {
         return (
           <div 
            key={index} 
-           className={`${isLastMessage && 'mb-4'}  my-1`}
+           className={`${isLastMessage && 'mb-4'} my-[0.2rem]`}
           >
             <Message 
              owner={ms['senderId'] === currentUser.uid} 

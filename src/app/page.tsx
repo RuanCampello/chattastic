@@ -4,48 +4,54 @@ import Sidebar from '@/components/sidebar'
 import { AuthContext } from '@/context/AuthContext'
 import { db } from '@/firebase'
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
-import { useRouter } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { useContext, useEffect } from 'react'
+
+export function handleBeforeUnload(user: string) {
+  return () => updateUserStatus(user, 'offline')
+}
+export function handleVisibilityChange(user: string) {
+  return () => {
+    if(document.visibilityState === 'hidden') updateUserStatus(user, 'away')
+    else updateUserStatus(user, 'online')
+  }
+}
+
+export async function updateUserStatus(userId: string, status: string) {
+  const userRef = doc(db, 'users', userId)
+  await setDoc(userRef, {
+    status,
+    lastOnline: serverTimestamp()
+  }, {merge: true})
+}
 
 export default function Home() {
   const { currentUser } = useContext(AuthContext)
   const router = useRouter()
-
-  async function updateUserStatus(userId: string, status: string) {
-    const userRef = doc(db, 'users', userId)
-    await setDoc(userRef, {
-      status,
-      lastOnline: serverTimestamp()
-    }, {merge: true})
-  }
+  const pathname = usePathname()
 
   useEffect(() => {
-    if (!currentUser) router.replace('/login')
+    if (!currentUser) router.replace('/login')   
   }, [currentUser])
 
   useEffect(() => {
-    if(currentUser && currentUser.uid) {
-      const user = currentUser.uid
-      updateUserStatus(user, 'online')
+    if(!currentUser || !currentUser.uid || pathname === '/login') return
+    const user:string = currentUser.uid
 
-      document.addEventListener('visibilitychange', handleVisibilityChange)
-      window.addEventListener('beforeunload', handleBeforeUnload)
-
-      return () => {
-        updateUserStatus(user, 'offline')
-        document.removeEventListener('visibilitychange', handleVisibilityChange)
-        window.removeEventListener('beforeunload', handleBeforeUnload)
-      }
+    async function updateUserToOnline() {
+      await updateUserStatus(user, 'online')
     }
-  }, [currentUser?.uid])
+    handleVisibilityChange(user)
+    updateUserToOnline()
 
-  function handleBeforeUnload() {
-    updateUserStatus(currentUser.uid, 'offline')
-  }
-  function handleVisibilityChange() {
-    if(document.visibilityState === 'hidden') updateUserStatus(currentUser.uid, 'away')
-    else updateUserStatus(currentUser.uid, 'online')
-  }
+    document.addEventListener('visibilitychange', handleVisibilityChange(user))
+    window.addEventListener('beforeunload', handleBeforeUnload(user))
+    return () => {
+      updateUserStatus(user, 'offline')
+      document.removeEventListener('visibilitychange', handleVisibilityChange(user))
+      window.removeEventListener('beforeunload', handleBeforeUnload(user))
+      }
+  }, [currentUser?.uid, pathname])
   return (
     <div className='w-screen h-screen bg-neutral-900 flex items-center justify-center'>
       { currentUser && 

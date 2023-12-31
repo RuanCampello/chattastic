@@ -5,6 +5,7 @@ import { signOut } from 'firebase/auth'
 import { collection, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore'
 import { useContext, useEffect, useState } from 'react'
 import { UserActivityType } from './chats'
+import { updateUserStatus } from '@/app/page'
 
 export default function Navbar() {
   const [error, setError] = useState(false)
@@ -31,6 +32,11 @@ export default function Navbar() {
     } finally {
       setIsLoading(false)
     }
+  }
+
+  async function handleLogOut() {
+    await updateUserStatus(currentUser.uid, 'offline')
+    signOut(auth)
   }
 
   useEffect(() => {
@@ -83,7 +89,7 @@ export default function Navbar() {
       )}
       {!isLoading && (
         <button
-          onClick={() => signOut(auth)}
+          onClick={handleLogOut}
           title='Log out'
           type='button'
           className='p-2 rounded-full transition duration-500 ease-in-out text-neon-blue hover:bg-jet'
