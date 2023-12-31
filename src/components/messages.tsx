@@ -10,13 +10,10 @@ export default function Messages() {
   const { data } = useContext(ChatContext)
   const { currentUser } = useContext(AuthContext)
   const chatContainerRef = useRef<HTMLDivElement>(null)
-  const [prevMessageIsLast, setPrevMessageIsLast] = useState(false)
 
   useEffect(() => {
     const unsub = onSnapshot(doc(db, 'chats', data.chatId), (doc) => {
-      if(doc.exists()) {
-        setMessages(doc.data().messages as [])
-      }
+      if(doc.exists()) setMessages(doc.data().messages as [])
     })
     return () => unsub()
   }, [data.chatId])
@@ -56,7 +53,7 @@ export default function Messages() {
     }
   }
   return (
-    <div ref={chatContainerRef} className='px-4 mt-4 w-full'>
+    <div ref={chatContainerRef} className='px-4 mt-4 w-full overflow-y-auto'>
       {messages.map((ms, index) => {
         const timestamp = ms['date']['seconds']
         const date = new Date(timestamp*1000)
