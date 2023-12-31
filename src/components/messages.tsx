@@ -53,7 +53,7 @@ export default function Messages() {
     }
   }
   return (
-    <div ref={chatContainerRef} className='px-4 mt-4 w-full overflow-y-auto'>
+    <div ref={chatContainerRef} className='px-4 mt-4 w-full overflow-y-auto scrollbar scrollbar-w-3 scrollbar-track-neutral-800 scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg'>
       {messages.map((ms, index) => {
         const timestamp = ms['date']['seconds']
         const date = new Date(timestamp*1000)

@@ -15,7 +15,7 @@ export default function InputMessage() {
   const [emojiPickerVisible, setEmojiPickerVisible] = useState(false)
 
   const { userData } = useContext(ChatContext)
-  const { currentUser } = useContext(AuthContext)  
+  const { currentUser } = useContext(AuthContext) 
 
   function handleEmojiSelection(emoji: any) {
     setText((previousText) => previousText + emoji.native)
@@ -61,12 +61,12 @@ export default function InputMessage() {
   
   return (
     <div className='p-[14px]' >
-      <form onSubmit={e => e.preventDefault()} className='w-full relative text-neutral-400 bg-eerie-black rounded-3xl font-semibold flex items-center px-4 p-1'>
+      <form onSubmit={e => e.preventDefault()} className='w-full text-neutral-400 bg-eerie-black rounded-3xl font-semibold flex items-center px-4 p-1'>
         <input
         value={text}
         onChange={(e) => setText(e.target.value)} 
-        className='w-full p-2 overflow-y-scroll focus:outline-none bg-eerie-black' type='text' 
-        placeholder='type your message...'/>
+        className='w-full p-2 focus:outline-none bg-eerie-black' type='text' 
+        placeholder={`type your message to ${userData.user.displayName}...`}/>
         <div className='flex gap-1'>
           <input onChange={(e) => {
             const selectedFile = e.target.files?.[0]
@@ -91,9 +91,12 @@ export default function InputMessage() {
       <div className='absolute right-[1vw] bottom-[10vh]'>
         {emojiPickerVisible && 
           <Picker 
-           data={data} 
+           data={data}
+           theme={'dark'}
            previewPosition={'none'}
            set={'native'}
+           emojiButtonSize={42}
+           perLine={7}
            emojiSize={32}
            onEmojiSelect={handleEmojiSelection as any} 
           />

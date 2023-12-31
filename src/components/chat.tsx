@@ -12,7 +12,7 @@ export default function Chat() {
         <div className='border-b-2 border-eerie-black p-4 sticky top-0 bg-jet'>
           <BasicInfo name={userData.user.displayName || userData.user.name} img={userData.user.photoURL} activity={userData.user.status}/>
         </div>
-        <div className='overflow-y-scroll flex'>
+        <div className='overflow-y-scroll scrollbar-none flex'>
           <Messages />
         </div>
       </div>
