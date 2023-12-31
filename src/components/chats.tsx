@@ -1,4 +1,4 @@
-import { memo, useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import BasicInfo from './basicInfo'
 import { collection, doc, onSnapshot } from 'firebase/firestore'
 import { db } from '@/firebase'
@@ -11,6 +11,7 @@ type ChatType = {
       uid: string
       photoURL?: string
       displayName: string
+      status: 'online' | 'away' | 'offline'
     }
     date: number
   }
@@ -21,9 +22,10 @@ export type UserActivityType = {
 
 export default function Chats() {
   const [chats, setChats] = useState<ChatType>({})
-  const [userActivities, setUserActivities] = useState<UserActivityType>({})
   const { currentUser } = useContext(AuthContext)
+  const [userActivities, setUserActivities] = useState<UserActivityType>({})
   const { dispatch } = useContext(ChatContext)
+  
 
   useEffect(() => {
     const getChats = () => {
@@ -49,21 +51,17 @@ export default function Chats() {
   }, [currentUser.uid])
   
   function handleSelectUser(user: any) {
-    const selectedUser = {
-      ...user,
-      status: userActivities[user['uid']]
-    }
-    dispatch({ type:'CHANGE_USER', payload: selectedUser })
+    dispatch({ type:'CHANGE_USER', payload: user })
   }  
   return (
     <div>
       {
-        Object.entries(chats)?.map((chat) => {
+        Object.entries(chats)?.map((chat) => {          
           return (
             <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className='hover:bg-jet p-3 rounded-xl cursor-pointer mb-1'>
             <BasicInfo img={chat[1]['userInfo']['photoURL']} name={chat[1]['userInfo']['displayName']} activity={userActivities[chat[1]['userInfo']['uid']]}/>
           </div>
-          )
+          )  
         })
       }
     </div>

@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useEffect } from 'react'
 import BasicInfo from './basicInfo'
 import InputMessage from './inputMessage'
 import Messages from './messages'
@@ -6,6 +6,7 @@ import { ChatContext } from '@/context/ChatContext'
 
 export default function Chat() {
   const { userData } = useContext(ChatContext)
+
   return (
     <div className='w-2/3 2xl:w-3/4 2xl:rounded-r-lg p-2 pb-0 flex flex-col'>
       <div className='flex flex-col flex-1 overflow-hidden'>
