@@ -8,12 +8,14 @@ export const ChatContext = createContext()
 
 export const ChatContextProvider = ({ children }) => {
   const { currentUser } = useContext(AuthContext)
-  if(!currentUser) return
+
   const INITIAL_STATE = {
     chatId: 'null',
     user: {},
   }
+  
   const chatReducer = (state, action) => {
+    if(!currentUser) return 
     switch (action.type) {
       case 'CHANGE_USER':
         return {
@@ -30,13 +32,13 @@ export const ChatContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE)
 
   useEffect(() => {
-    if(state.user.uid) {
+    async function fetchUsersData() {
       const userDocRef = doc(db, 'users', state.user.uid)
       const unsubscribe = onSnapshot(userDocRef, (userDoc) => {
         const data = userDoc.data()
         const userStatus = data ? data.status : 'offline'
         const userLastOnline = data.lastOnline.seconds * 1000
-        console.log(userLastOnline);
+        console.log(userLastOnline)
         const updatedUser = {
           ...state.user,
           status: userStatus,
@@ -48,11 +50,11 @@ export const ChatContextProvider = ({ children }) => {
         unsubscribe()
       }
     }
+    state.user.uid && fetchUsersData()
+  }, [state.user.uid, state.user])
 
-  }, [state.user.uid])
-  
   return (
-    <ChatContext.Provider value={{ userData:state, dispatch }}>
+    <ChatContext.Provider value={{ userData: state, dispatch }}>
       {children}
     </ChatContext.Provider>
   )
