@@ -2,10 +2,17 @@ import { AuthContext } from '@/context/AuthContext'
 import { auth, db } from '@/firebase'
 import { SignOut } from '@phosphor-icons/react'
 import { signOut } from 'firebase/auth'
-import { collection, doc, getDocs, onSnapshot, query, where } from 'firebase/firestore'
+import { collection, doc, getDocs, onSnapshot, query, serverTimestamp, setDoc, where } from 'firebase/firestore'
 import { useContext, useEffect, useState } from 'react'
 import { UserActivityType } from './chats'
-import { updateUserStatus } from '@/app/page'
+
+export async function updateUserStatus(userId: string, status: string) {
+  const userRef = doc(db, 'users', userId)
+  await setDoc(userRef, {
+    status,
+    lastOnline: serverTimestamp()
+  }, {merge: true})
+}
 
 export default function Navbar() {
   const [error, setError] = useState(false)
@@ -54,7 +61,6 @@ export default function Navbar() {
       }
     }
     const unsubscribe = currentUser?.uid && getUserStatus()
-
     return () => unsubscribe && unsubscribe()
   }, [currentUser])
 

@@ -1,29 +1,10 @@
 'use client'
 import Chat from '@/components/chat'
+import { updateUserStatus } from '@/components/navbar'
 import Sidebar from '@/components/sidebar'
 import { AuthContext } from '@/context/AuthContext'
-import { db } from '@/firebase'
-import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 import { usePathname, useRouter } from 'next/navigation'
 import { useContext, useEffect } from 'react'
-
-export function handleBeforeUnload(user: string) {
-  return () => updateUserStatus(user, 'offline')
-}
-export function handleVisibilityChange(user: string) {
-  return () => {
-    if(document.visibilityState === 'hidden') updateUserStatus(user, 'away')
-    else updateUserStatus(user, 'online')
-  }
-}
-
-export async function updateUserStatus(userId: string, status: string) {
-  const userRef = doc(db, 'users', userId)
-  await setDoc(userRef, {
-    status,
-    lastOnline: serverTimestamp()
-  }, {merge: true})
-}
 
 export default function Home() {
   const { currentUser } = useContext(AuthContext)
@@ -41,16 +22,22 @@ export default function Home() {
     async function updateUserToOnline() {
       await updateUserStatus(user, 'online')
     }
-    handleVisibilityChange(user)
+    function handleBeforeUnload() {
+      updateUserStatus(user, 'offline')
+    }
+    function handleVisibilityChange() {
+      if(document.visibilityState === 'hidden') updateUserStatus(user, 'away')
+      else updateUserStatus(user, 'online')
+    }
     updateUserToOnline()
 
-    document.addEventListener('visibilitychange', handleVisibilityChange(user))
-    window.addEventListener('beforeunload', handleBeforeUnload(user))
+    document.addEventListener('visibilitychange', handleVisibilityChange)
+    window.addEventListener('beforeunload', handleBeforeUnload)
     return () => {
       updateUserStatus(user, 'offline')
-      document.removeEventListener('visibilitychange', handleVisibilityChange(user))
-      window.removeEventListener('beforeunload', handleBeforeUnload(user))
-      }
+      document.removeEventListener('visibilitychange', handleVisibilityChange)
+      window.removeEventListener('beforeunload', handleBeforeUnload)
+    }
   }, [currentUser?.uid, pathname])
   return (
     <div className='w-screen h-screen bg-neutral-900 flex items-center justify-center'>
