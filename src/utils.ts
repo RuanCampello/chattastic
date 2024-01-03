@@ -1,10 +1,10 @@
 export function formatTime(date: Date) {
-  const now = new Date()
+  const now = new Date();
   const diffInMilliseconds = now.getTime() - date.getTime()
   const diffInMinutes = Math.floor(diffInMilliseconds / (60 * 1000))
 
   if (diffInMinutes <= 1) {
-    return 'Just now'
+    return 'Just now';
   } else if (
     date.getDate() === now.getDate() &&
     date.getMonth() === now.getMonth() &&
@@ -17,10 +17,16 @@ export function formatTime(date: Date) {
     date.getMonth() === now.getMonth() &&
     date.getFullYear() === now.getFullYear()
   ) {
-    // yesterday
+    // Yesterday
     return `Yesterday at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
   } else {
-    // older than yesterday
-    return `${date.toLocaleDateString()} at ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+    // Older than yesterday
+    const formattedDate = date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    return `${formattedDate} at ${formattedTime}`
   }
 }

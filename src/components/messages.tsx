@@ -56,5 +56,5 @@ const Messages = memo(() => {
     </div>
   )
 })
-
+Messages.displayName = 'Messages'
 export default Messages
