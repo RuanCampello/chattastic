@@ -38,7 +38,6 @@ export const ChatContextProvider = ({ children }) => {
         const data = userDoc.data()
         const userStatus = data ? data.status : 'offline'
         const userLastOnline = data.lastOnline.seconds * 1000
-        console.log(userLastOnline)
         const updatedUser = {
           ...state.user,
           status: userStatus,
@@ -46,12 +45,10 @@ export const ChatContextProvider = ({ children }) => {
         }
         dispatch({ type: 'CHANGE_USER', payload: updatedUser })
       })
-      return () => {
-        unsubscribe()
-      }
+      return () => unsubscribe()
     }
     state.user.uid && fetchUsersData()
-  }, [state.user.uid, state.user])
+  }, [state.user.uid])
 
   return (
     <ChatContext.Provider value={{ userData: state, dispatch }}>
