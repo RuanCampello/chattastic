@@ -19,7 +19,8 @@ export default function Navbar() {
   const [isLoading, setIsLoading] = useState(true)
   const {currentUser} = useContext(AuthContext)
   const [currentUserStatus, setCurrentUserStatus] = useState<UserActivityType>()
-  const username = typeof window !== 'undefined' ? localStorage.getItem('username') : null
+  const username = typeof window !== 'undefined' ? sessionStorage.getItem(`username_${currentUser.uid}`) : null
+  const currentUserId = currentUser.uid
 
   async function getUsername() {
     try {
@@ -27,7 +28,8 @@ export default function Navbar() {
       
       if (usernameQuery.docs.length > 0) {
         const userData = usernameQuery.docs[0].data()
-        localStorage.setItem('username',userData.username)
+        sessionStorage.setItem(`username_${currentUserId}`, userData.username)
+        broadcastUsername(userData.username)
         setError(false) // reset error state if successful
       } else {
         // handle the case where no user is found for the given email
@@ -40,29 +42,43 @@ export default function Navbar() {
       setIsLoading(false)
     }
   }
+  function broadcastUsername(newUsername: string) {
+    const broadcastChannel = new BroadcastChannel('username_channel')
+    broadcastChannel.postMessage({ currentUserId, username: newUsername })
+  }
 
   async function handleLogOut() {
-    await updateUserStatus(currentUser.uid, 'offline')
+    await updateUserStatus(currentUserId, 'offline')
     signOut(auth)
   }
 
   useEffect(() => {
-    currentUser.email && getUsername()
-  }, [currentUser, username])
-
-  useEffect(() => {
     const getUserStatus = () => {
-      if (currentUser?.uid) {
-        const userRef = doc(db, 'users', currentUser.uid)
+      if (currentUser.uid) {
+        const userRef = doc(db, 'users', currentUserId)
         return onSnapshot(userRef, (doc) => {
           const data = doc.data()
           setCurrentUserStatus(data?.status || 'offline')
         })
       }
     }
-    const unsubscribe = currentUser?.uid && getUserStatus()
+    const unsubscribe = currentUserId && getUserStatus()
     return () => unsubscribe && unsubscribe()
   }, [currentUser])
+
+  useEffect(() => {
+    const broadcastChannel = new BroadcastChannel('username_channel')
+    broadcastChannel.onmessage = (event) => {
+      const { currentUserId, username } = event.data
+      sessionStorage.setItem(`username_${currentUserId}`, username)
+    }
+
+    return () => broadcastChannel.close()
+  }, [])
+
+  useEffect(() => {
+    currentUser.email && getUsername()
+  }, [username, currentUser])
 
   return (
     <div className='2xl:rounded-bl-lg flex items-center justify-between p-4 w-full bg-eerie-black border-t border-neon-blue'>
@@ -89,7 +105,6 @@ export default function Navbar() {
             <h2 className='text-lg text-start font-medium leading-4'>{currentUser.displayName}</h2>
             {!isLoading &&
             <h3 className='text-neon-blue leading-3 font-bold'>@{username}</h3>}
-            {/* {String(currentUserStatus)} */}
           </div>
         </div>
       )}
