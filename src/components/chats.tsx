@@ -28,7 +28,7 @@ export default function Chats() {
   const { currentUser } = useContext(AuthContext)
   const [userActivities, setUserActivities] = useState<UserActivityType>({})
   const [usersLastOnline, setUsersLastOnline] = useState<UserLastOnline>({})
-  const { dispatch } = useContext(ChatContext)
+  const { userData, dispatch } = useContext(ChatContext)
   
 
   useEffect(() => {
@@ -57,6 +57,7 @@ export default function Chats() {
   }, [currentUser.uid])
   
   function handleSelectUser(user: any) {
+    if(userData.user.uid === user.uid) return
     const selectedUser = {
       ...user,
     }
