@@ -3,6 +3,7 @@ import { Urbanist } from 'next/font/google'
 import './globals.css'
 import { AuthContextProvider } from '@/context/AuthContext'
 import { ChatContextProvider } from '@/context/ChatContext'
+import { MessageContextProvider } from '@/context/MessageContext'
 
 const urbanist = Urbanist({ weight: ['400', '500', '600'], subsets: ['latin'] })
 
@@ -20,7 +21,9 @@ export default function RootLayout({
     <html lang='en'>
       <AuthContextProvider>
         <ChatContextProvider>
-          <body className={urbanist.className}>{children}</body>
+          <MessageContextProvider>
+            <body className={urbanist.className}>{children}</body>
+          </MessageContextProvider>
         </ChatContextProvider>
       </AuthContextProvider>
     </html>

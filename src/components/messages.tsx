@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useRef, useState, memo } from 'react'
-import Message from './message'
 import { ChatContext } from '@/context/ChatContext'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { db } from '@/firebase'
 import { AuthContext } from '@/context/AuthContext'
 import { formatTime } from '@/utils'
+import { Message } from './Message'
 
 const Messages = memo(() => {
   const [messages, setMessages] = useState([])
@@ -30,8 +30,13 @@ const Messages = memo(() => {
   return (
     <div ref={chatContainerRef} className='px-4 mt-4 w-full overflow-y-auto scrollbar scrollbar-w-3 scrollbar-track-jet scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg'>
       {messages.map((ms, index) => {
+        const isOwner = ms['senderId'] === currentUser.uid
         const timestamp = ms['date']['seconds']
         const date = new Date(timestamp * 1000)
+        const repliedMessage: {repliedText: string, repliedOwner: boolean} = ms['repliedMessage']
+
+        console.log(repliedMessage);
+        
 
         const isLastMessage =
           index === messages.length - 1 ||
@@ -41,15 +46,18 @@ const Messages = memo(() => {
         return (
           <div 
             key={index} 
-            className={`${isLastMessage && 'mb-4'} my-[0.2rem]`}
+            className={`my-[0.2rem]`}
           >
-            <Message 
-              owner={ms['senderId'] === currentUser.uid} 
-              text={ms['text']} 
-              time={formatTime(date)} 
-              imgURL={ms['img']}
-              isLastMessage={isLastMessage}
-            />
+            <Message.Root>
+              {repliedMessage 
+              &&
+              <div className={`flex items-center ${isOwner && 'justify-end'} gap-2`}>
+                <Message.Header repliedOwner={repliedMessage.repliedOwner} owner={isOwner} repliedMessage={repliedMessage.repliedText}/>
+                <div className='w-1 bg-eerie-black h-16 rounded-full'></div>
+              </div> 
+              }
+              <Message.Content time={formatTime(date)} imgURL={ms['img']} text={ms['text']} owner={isOwner}/>
+            </Message.Root>
           </div>
         )
       })}

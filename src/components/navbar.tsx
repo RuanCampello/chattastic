@@ -24,12 +24,12 @@ export default function Navbar() {
 
   async function getUsername() {
     try {
+      if(!currentUser.email) return
       const usernameQuery = await getDocs(query(collection(db, 'users'), where('email', '==', currentUser.email)))
       
       if (usernameQuery.docs.length > 0) {
         const userData = usernameQuery.docs[0].data()
         sessionStorage.setItem(`username_${currentUserId}`, userData.username)
-        broadcastUsername(userData.username)
         setError(false) // reset error state if successful
       } else {
         // handle the case where no user is found for the given email
@@ -41,10 +41,6 @@ export default function Navbar() {
     } finally {
       setIsLoading(false)
     }
-  }
-  function broadcastUsername(newUsername: string) {
-    const broadcastChannel = new BroadcastChannel('username_channel')
-    broadcastChannel.postMessage({ currentUserId, username: newUsername })
   }
 
   async function handleLogOut() {
@@ -67,18 +63,8 @@ export default function Navbar() {
   }, [currentUser])
 
   useEffect(() => {
-    const broadcastChannel = new BroadcastChannel('username_channel')
-    broadcastChannel.onmessage = (event) => {
-      const { currentUserId, username } = event.data
-      sessionStorage.setItem(`username_${currentUserId}`, username)
-    }
-
-    return () => broadcastChannel.close()
-  }, [])
-
-  useEffect(() => {
-    currentUser.email && getUsername()
-  }, [username, currentUser])
+    getUsername()
+  }, [username, currentUser.email, currentUser])
 
   return (
     <div className='2xl:rounded-bl-lg flex items-center justify-between p-4 w-full bg-eerie-black border-t border-neon-blue'>
