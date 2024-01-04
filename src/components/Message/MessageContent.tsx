@@ -14,9 +14,6 @@ export default function MessageContent({owner, imgURL, text, time}: MessageConte
   function handleReply() {
     setSelectedMessage({text: text, owner: owner})
   }
-  useEffect(() => {
-    console.log(selectedMessage?.owner)
-  }, [selectedMessage])
   return (
     <div className={`${owner && 'justify-self-end flex-row-reverse'} items-center gap-1 group flex`}>
       <div className={`${owner ? 'bg-neon-blue text-gray-200 selection:bg-neutral-300 selection:text-neon-blue' : 'text-gray-400 bg-eerie-black selection:text-eerie-black selection:bg-neutral-300'} rounded-xl p-3 leading-4 w-fit xl:max-w-[40%] max-w-[70%] font-semibold flex flex-col text-start`}>

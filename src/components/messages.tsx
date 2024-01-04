@@ -33,10 +33,7 @@ const Messages = memo(() => {
         const isOwner = ms['senderId'] === currentUser.uid
         const timestamp = ms['date']['seconds']
         const date = new Date(timestamp * 1000)
-        const repliedMessage: {repliedText: string, repliedOwner: boolean} = ms['repliedMessage']
-
-        console.log(repliedMessage);
-        
+        const repliedMessage: {repliedText: string, repliedOwner: boolean, receiverUid: string} = ms['repliedMessage']
 
         const isLastMessage =
           index === messages.length - 1 ||
@@ -49,15 +46,16 @@ const Messages = memo(() => {
             className={`my-[0.2rem]`}
           >
             <Message.Root>
-              {repliedMessage 
-              &&
-              <div className={`flex items-center ${isOwner && 'justify-end'} gap-2`}>
-                <Message.Header repliedOwner={repliedMessage.repliedOwner} owner={isOwner} repliedMessage={repliedMessage.repliedText}/>
-                <div className='w-1 bg-eerie-black h-16 rounded-full'></div>
-              </div> 
-              }
+              {repliedMessage && (
+                <div className={`flex items-center ${isOwner ? 'justify-end' : ''} gap-2`}>
+                  {!isOwner && <div className={`w-1 bg-eerie-black h-9 mt-auto mb-1 rounded-full`}></div>}
+                  <Message.Header senderId={ms['senderId']} receiverUid={repliedMessage.receiverUid} repliedOwner={repliedMessage.repliedOwner} owner={isOwner} repliedMessage={repliedMessage.repliedText}/>
+                  {isOwner && <div className={`w-1 bg-eerie-black h-9 mt-auto mb-1 rounded-full`}></div>}
+                </div>
+              )}
               <Message.Content time={formatTime(date)} imgURL={ms['img']} text={ms['text']} owner={isOwner}/>
             </Message.Root>
+
           </div>
         )
       })}

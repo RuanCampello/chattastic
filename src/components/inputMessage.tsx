@@ -55,7 +55,8 @@ export default function InputMessage() {
           senderId: currentUser.uid,
           repliedMessage: {
             repliedOwner: selectedMessage.owner,
-            repliedText: selectedMessage.text
+            repliedText: selectedMessage.text,
+            receiverUid: userData.user.uid
           },
           date: Timestamp.now(),
         })
