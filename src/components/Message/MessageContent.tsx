@@ -22,7 +22,7 @@ export default function MessageContent({owner, imgURL, text, time}: MessageConte
         }
         {text}
       </div>
-      <button onClick={handleReply}>
+      <button title='Reply' onClick={handleReply}>
         <ArrowBendUpLeft className='text-gray-500 hover:text-gray-300 invisible group-hover:visible' weight='fill' size={24} />
         </button>
         <span className='text-gray-500 text-sm font-semibold selection:bg-gray-500 selection:text-neutral-300 invisible group-hover:visible'>{time}</span>

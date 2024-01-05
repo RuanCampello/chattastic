@@ -5,6 +5,8 @@ import BasicInfo from './basicInfo'
 import { AuthContext } from '@/context/AuthContext'
 import { MagnifyingGlass } from '@phosphor-icons/react'
 import { ChatContext } from '@/context/ChatContext'
+import { UsernameContext } from '@/context/UsernameContext'
+import { UserChatsContext } from '@/context/UserChatsContext'
 
 export type UserData = {
   uid: string
@@ -16,28 +18,14 @@ export type UserData = {
 export default function SearchBar() {
   const { currentUser } = useContext(AuthContext)
   const { dispatch } = useContext(ChatContext)
+  const { username } = useContext(UsernameContext)
+  const { userChats } = useContext(UserChatsContext)
   const [queryInput, setQuery] = useState(String)
   const [user, setUser] = useState<UserData | null>(null)
-  const [username, setUsername] = useState(String)
+  const [queryUser, setQueryUser] = useState<UserData | null>(null)
   const [error, setError] = useState(false)
 
-  useEffect(() => {
-    async function getUsername() {
-      try {
-        if(currentUser && currentUser.email) {
-          const usernameQuery = await getDocs(query(collection(db, 'users'), where('email', '==', currentUser.email)))
-          if(usernameQuery.docs.length > 0) {
-            const userData = usernameQuery.docs[0].data()
-            setUsername(userData.username)
-          }
-        }
-      } catch(error) {
-        console.error(error)
-        setError(true)
-      }
-    }
-    getUsername()
-  }, [currentUser])
+  const stringUsername = username.toString().replace('@', '')
   
   async function handleClick() {
     if(user && currentUser) { 
@@ -78,29 +66,37 @@ export default function SearchBar() {
   function handleSelection(user: any) {
     dispatch({type: 'CHANGE_USER', payload: user})
   }
-
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     handleSearch()
     setQuery('')
   }
-  async function handleSearch() {
+  function checkQueryUser(user: UserData): boolean {
     //verify if the user is not searching for himself
-    if(username === queryInput.trim()) {
-      setUser(null)
-      return
-    }
+    if(user.username === stringUsername) return false
+    //verify if the users is not in usersChats
+    const isUserInChats = Object.entries(userChats).some((chat: any) => {
+      return chat[1].userInfo.uid === user.uid
+    })
+    return !isUserInChats
+  }
+  async function handleSearch() {
     const q = query(collection(db, 'users'), where('username', '==', queryInput.trim()))
     try { 
       const querySnapshot = await getDocs(q)
       if(!querySnapshot.empty) {
         querySnapshot.forEach((doc) => {
-          setUser(doc.data() as UserData)
+          setQueryUser(doc.data() as UserData)
         })
-      } else setUser(null)
+      } else setQueryUser(null)
+      if(queryUser) {
+        checkQueryUser(queryUser)
+        if(checkQueryUser(queryUser)) setUser(queryUser)
+      }
     } catch (error) {
       setError(true)   
     }
+    
   }
   
   return (

@@ -4,6 +4,7 @@ import { Timestamp, collection, doc, onSnapshot } from 'firebase/firestore'
 import { db } from '@/firebase'
 import { AuthContext } from '@/context/AuthContext'
 import { ChatContext } from '@/context/ChatContext'
+import { UserChatsContext } from '@/context/UserChatsContext'
 
 type ChatType = {
   [chatId: string]: {
@@ -24,17 +25,20 @@ type UserLastOnline = {
 }
 
 export default function Chats() {
-  const [chats, setChats] = useState<ChatType>({})
   const { currentUser } = useContext(AuthContext)
+  const { userData, dispatch } = useContext(ChatContext)
+  const { setUserChats } = useContext(UserChatsContext)
+  const [chats, setChats] = useState<ChatType>({})
   const [userActivities, setUserActivities] = useState<UserActivityType>({})
   const [usersLastOnline, setUsersLastOnline] = useState<UserLastOnline>({})
-  const { userData, dispatch } = useContext(ChatContext)
   
 
   useEffect(() => {
     const getChats = () => {
       const unsubChats = onSnapshot(doc(db, 'userChats', currentUser.uid), (doc) => {
-        setChats(doc.data() as ChatType)
+        const userChatsData = doc.data() as ChatType
+        setChats(userChatsData)
+        setUserChats(userChatsData)
       })
       const unsubActivities = onSnapshot(collection(db, 'users'), (snapshot) => {
         const activities: UserActivityType = {}

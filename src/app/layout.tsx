@@ -4,6 +4,8 @@ import './globals.css'
 import { AuthContextProvider } from '@/context/AuthContext'
 import { ChatContextProvider } from '@/context/ChatContext'
 import { MessageContextProvider } from '@/context/MessageContext'
+import { UsernameContextProvider } from '@/context/UsernameContext'
+import { UserChatsContextProvider } from '@/context/UserChatsContext'
 
 const urbanist = Urbanist({ weight: ['400', '500', '600'], subsets: ['latin'] })
 
@@ -22,7 +24,11 @@ export default function RootLayout({
       <AuthContextProvider>
         <ChatContextProvider>
           <MessageContextProvider>
-            <body className={urbanist.className}>{children}</body>
+            <UsernameContextProvider>
+              <UserChatsContextProvider>
+                <body className={urbanist.className}>{children}</body>
+              </UserChatsContextProvider>
+            </UsernameContextProvider>
           </MessageContextProvider>
         </ChatContextProvider>
       </AuthContextProvider>

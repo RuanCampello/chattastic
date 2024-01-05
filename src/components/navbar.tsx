@@ -6,6 +6,7 @@ import { signOut } from 'firebase/auth'
 import { collection, doc, getDocs, onSnapshot, query, serverTimestamp, setDoc, where } from 'firebase/firestore'
 import { useContext, useEffect, useState } from 'react'
 import { UserActivityType } from './chats'
+import { UsernameContext } from '@/context/UsernameContext'
 
 export async function updateUserStatus(userId: string, status: string) {
   const userRef = doc(db, 'users', userId)
@@ -18,34 +19,10 @@ export async function updateUserStatus(userId: string, status: string) {
 export default function Navbar() {
   const { currentUser } = useContext(AuthContext)
   const { dispatch } = useContext(ChatContext)
-
-  const [error, setError] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [currentUserStatus, setCurrentUserStatus] = useState<UserActivityType>()
-  const username = typeof window !== 'undefined' ? sessionStorage.getItem(`username_${currentUser.uid}`) : null
-  const currentUserId = currentUser.uid
+  const { username, isLoading } = useContext(UsernameContext)
   
-
-  async function getUsername() {
-    try {
-      if(!currentUser.uid) return
-      const usernameQuery = await getDocs(query(collection(db, 'users'), where('uid', '==', currentUserId)))      
-      
-      if (usernameQuery.docs.length > 0) {
-        const userData = usernameQuery.docs[0].data()
-        sessionStorage.setItem(`username_${currentUserId}`, userData.username)
-        setError(false) // reset error state if successful
-      } else {
-        // handle the case where no user is found for the given uid
-        setError(true)
-      }
-    } catch (error) {
-      console.error('Error fetching username:', error)
-      setError(true)
-    } finally {
-      setIsLoading(false)
-    }
-  }
+  const [currentUserStatus, setCurrentUserStatus] = useState<UserActivityType>()
+  const currentUserId = currentUser.uid
 
   async function handleLogOut() {
     await updateUserStatus(currentUserId, 'offline')
@@ -66,10 +43,6 @@ export default function Navbar() {
     const unsubscribe = currentUserId && getUserStatus()
     return () => unsubscribe && unsubscribe()
   }, [currentUser])
-
-  useEffect(() => {
-    getUsername()
-  }, [username, currentUser.uid, currentUser])
 
   return (
     <div className='2xl:rounded-bl-lg flex items-center justify-between p-4 w-full bg-eerie-black border-t border-neon-blue'>
@@ -95,7 +68,7 @@ export default function Navbar() {
           <div className='flex flex-col gap-1'>
             <h2 className='text-lg text-start font-medium leading-4'>{currentUser.displayName}</h2>
             {!isLoading &&
-            <h3 className='text-neon-blue leading-3 font-bold'>@{username}</h3>}
+            <h3 className='text-neon-blue leading-3 font-bold'>{username}</h3>}
           </div>
         </div>
       )}

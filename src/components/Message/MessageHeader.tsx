@@ -25,11 +25,6 @@ export default function MessageHeader({ repliedMessage, repliedOwner, owner, sen
     else return userData.user.displayName
   }
 
-  useEffect(() => {
-    console.log(`receiver:${getReceiver()} sender:${getSender()}`);
-    
-  }, [senderId, receiverUid])
-
   return (
     <div className={`text-sm font-medium text-neutral-400 flex flex-col ${owner && 'items-end'}`}>
       <div className='my-1'>
