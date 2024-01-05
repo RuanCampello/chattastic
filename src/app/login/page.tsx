@@ -5,7 +5,6 @@ import { auth } from '@/firebase'
 import { Eye, EyeClosed } from '@phosphor-icons/react'
 import { FirebaseError } from 'firebase/app'
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -25,9 +24,6 @@ export default function Login() {
     } catch (error) {
       if(error instanceof FirebaseError) setError(error.code)
     }
-  }
-  function handleForgotPassword() {
-    router.replace('/forgotpassword')
   }
   return (
     <MenuWrapper>
@@ -53,7 +49,9 @@ export default function Login() {
                 {isVisible ? <Eye weight='duotone' size={24}/> : <EyeClosed weight='duotone' size={24}/>}
               </div>
             </div>
-            <Form.Link title='Forgot your password?' text='' path='/forgotpassword' />
+            <div className='text-end'>
+              <Form.Link title='Forgot your password?' text='' path='/forgotpassword' />
+            </div>
           </div>
         </div>
         <Form.Button title='Sign in'/>
