@@ -5,6 +5,7 @@ import { signOut } from 'firebase/auth'
 import { collection, doc, getDocs, onSnapshot, query, serverTimestamp, setDoc, where } from 'firebase/firestore'
 import { useContext, useEffect, useState } from 'react'
 import { UserActivityType } from './chats'
+import { ChatContext } from '@/context/ChatContext'
 
 export async function updateUserStatus(userId: string, status: string) {
   const userRef = doc(db, 'users', userId)
@@ -17,7 +18,8 @@ export async function updateUserStatus(userId: string, status: string) {
 export default function Navbar() {
   const [error, setError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
-  const {currentUser} = useContext(AuthContext)
+  const { currentUser } = useContext(AuthContext)
+  const { dispatch } = useContext(ChatContext)
   const [currentUserStatus, setCurrentUserStatus] = useState<UserActivityType>()
   const username = typeof window !== 'undefined' ? sessionStorage.getItem(`username_${currentUser.uid}`) : null
   const currentUserId = currentUser.uid
@@ -45,6 +47,7 @@ export default function Navbar() {
 
   async function handleLogOut() {
     await updateUserStatus(currentUserId, 'offline')
+    dispatch(null)
     signOut(auth)
   }
 

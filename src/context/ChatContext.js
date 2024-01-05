@@ -15,7 +15,7 @@ export const ChatContextProvider = ({ children }) => {
   }
   
   const chatReducer = (state, action) => {
-    if(!currentUser) return 
+    if(!currentUser || action) return 
     switch (action.type) {
       case 'CHANGE_USER':
         return {

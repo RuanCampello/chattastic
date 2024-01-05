@@ -8,6 +8,8 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import MenuWrapper from '@/components/menuwrapper'
+import { Form } from '@/components/Form'
 
 export default function Register() {
   const [isVisible, setIsVisible] = useState(false)
@@ -63,30 +65,28 @@ export default function Register() {
     }
   }
   return (
-    <div className='bg-ultra-violet w-screen h-screen flex justify-center items-center text-savoy-blue'>
-      <form onSubmit={handleSubmit} className='flex flex-col w-96 h-fit rounded-lg p-8 bg-gray-100'>
-        <h1 className='text-3xl font-bold mb-8 self-center'>Register</h1>
+    <MenuWrapper>
+      <Form.Root onSubmitFunction={() => handleSubmit}>
+        <Form.Header title='Register' />
         <div className='flex flex-col gap-4'>
           <InputSection name='name' placeholder='Name'/>
           <InputSection type='text' name='username' placeholder='Username'/>
           <InputSection type='email' name='email' placeholder='E-mail'/>
           <div className='flex items-center w-full relative'>
-            <input className='p-3 bg-slate-200 w-full focus:outline-none' type={isVisible ? 'text' : 'password'} name='password' placeholder='Password' />
+            <input className='p-3 bg-slate-200 rounded-md w-full focus:outline-none' type={isVisible ? 'text' : 'password'} name='password' placeholder='Password' />
             <div onClick={e => setIsVisible(!isVisible)} className='absolute right-1 cursor-pointer hover:bg-slate-300 rounded-full p-2' >
               {isVisible ? <Eye weight='duotone' size={24}/> : <EyeClosed weight='duotone' size={24}/>}
             </div>
           </div>
           <input className='hidden' name='photo' type='file' id='file'/>
-          <label className='cursor-pointer flex items-center text-sm gap-1' htmlFor='file'>
+          <label className='cursor-pointer flex font-medium items-center text-sm gap-1 text-neon-blue' htmlFor='file'>
             <ImageSquare weight='duotone' size={32}/>
             <span>Add a profile photo</span>
           </label>
         </div>
-        <button type='submit' className='bg-savoy-blue text-slate-50 hover:bg-ultra-violet w-full text-lg font-bold h-auto p-2 rounded-full mt-4 self-center'>
-          Sign Up
-        </button>
-        <span className='my-2'>You already have an account? <Link href={'/login'} className='underline'>Login</Link></span>
-      </form>
-    </div>
+        <Form.Button title='Sign up' />
+        <Form.Link title='Login' path='/login' text='Already have an account?' />
+      </Form.Root>
+    </MenuWrapper>
   )
 }
