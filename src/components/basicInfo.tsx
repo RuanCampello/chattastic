@@ -1,3 +1,4 @@
+import Image from 'next/image'
 import { formatTime } from '@/utils'
 
 interface BasicInfoProps {
@@ -13,7 +14,7 @@ export default function BasicInfo({name, img, activity, lastOnline, showActivity
   <div className='flex items-center gap-3'>
      {img ? 
      <div className='flex relative'>
-       <img src={img} className='h-11 w-11 rounded-full object-cover' />
+       <Image alt={`${name} profile picture`} src={img} width={48} height={48} className={'rounded-full object-cover h-11 w-11'} />
        {showActivity &&
         <div className={`h-4 w-4 rounded-full absolute bottom-0 -right-1 border-[3px] border-eerie-black ${activity === 'online' ? 'bg-pigment-green' : activity === 'away' ? 'bg-xanthous' : 'bg-imperial-red'}`}></div>}
      </div>

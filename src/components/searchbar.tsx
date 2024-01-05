@@ -5,7 +5,6 @@ import BasicInfo from './basicInfo'
 import { AuthContext } from '@/context/AuthContext'
 import { MagnifyingGlass } from '@phosphor-icons/react'
 import { ChatContext } from '@/context/ChatContext'
-import { UsernameContext } from '@/context/UsernameContext'
 import { UserChatsContext } from '@/context/UserChatsContext'
 
 export type UserData = {
@@ -18,14 +17,12 @@ export type UserData = {
 export default function SearchBar() {
   const { currentUser } = useContext(AuthContext)
   const { dispatch } = useContext(ChatContext)
-  const { username } = useContext(UsernameContext)
   const { userChats } = useContext(UserChatsContext)
   const [queryInput, setQuery] = useState(String)
   const [user, setUser] = useState<UserData | null>(null)
-  const [queryUser, setQueryUser] = useState<UserData | null>(null)
   const [error, setError] = useState(false)
 
-  const stringUsername = username.toString().replace('@', '')
+  const stringUsername = currentUser?.username?.replace('@', '')
   
   async function handleClick() {
     if(user && currentUser) { 
@@ -73,9 +70,7 @@ export default function SearchBar() {
   }
   function checkQueryUser(user: UserData): boolean {
     //verify if the user is not searching for himself
-    if(user.username === stringUsername) {
-      return false
-    } 
+    if(user.username === stringUsername) return false
     //verify if the users is not in usersChats
     const isUserInChats = Object.entries(userChats).some((chat: any) => {
       return chat[1].userInfo.uid === user.uid
@@ -86,15 +81,12 @@ export default function SearchBar() {
     const q = query(collection(db, 'users'), where('username', '==', queryInput.trim()))
     try {
       const querySnapshot = await getDocs(q)
-      // reset queryUser before processing the results
-      setQueryUser(null)
   
       if (!querySnapshot.empty) {
         const users = querySnapshot.docs.map((doc) => doc.data() as UserData)
         const validUser = users.find((user) => checkQueryUser(user))
   
         if (validUser) {
-          setQueryUser(validUser)
           setUser(validUser)
         } else setUser(null)
       } else setUser(null)
@@ -104,12 +96,11 @@ export default function SearchBar() {
     }
   }
   
-  
   return (
     <div>
       <form onSubmit={handleSubmit} className='my-4 flex items-center bg-jet rounded-xl w-full text-neutral-300'>
-        <MagnifyingGlass size={18} className='text-neutral-400 ml-3' />
-        <input value={queryInput} onChange={e => setQuery(e.target.value)} className='w-full rounded-xl focus:outline-none p-2 placeholder:text-neutral-400 placeholder:font-bold leading-4 bg-jet' type='text' placeholder='search user...' />
+        <MagnifyingGlass size={18} weight='bold' className='text-neutral-400 ml-3' />
+        <input value={queryInput} onChange={e => setQuery(e.target.value)} className='w-full rounded-xl font-semibold focus:outline-none p-2 placeholder:text-neutral-400 placeholder:font-semibold leading-4 bg-jet' type='text' placeholder='search user...' />
       </form>
       {user && 
         <div onClick={() => {
