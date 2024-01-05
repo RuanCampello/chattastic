@@ -65,7 +65,7 @@ export default function Register() {
   }
   return (
     <MenuWrapper>
-      <Form.Root onSubmitFunction={() => handleSubmit}>
+      <Form.Root onSubmitFunction={handleSubmit}>
         <Form.Header title='Register' />
         <div className='flex flex-col gap-4'>
           <InputSection name='name' placeholder='Name'/>
@@ -73,7 +73,7 @@ export default function Register() {
           <InputSection type='email' name='email' placeholder='E-mail'/>
           <div className='flex items-center w-full relative'>
             <input className='p-3 bg-slate-200 rounded-md w-full focus:outline-none' type={isVisible ? 'text' : 'password'} name='password' placeholder='Password' />
-            <div onClick={e => setIsVisible(!isVisible)} className='absolute right-1 cursor-pointer hover:bg-slate-300 rounded-full p-2' >
+            <div onClick={() => setIsVisible(!isVisible)} className='absolute right-1 cursor-pointer hover:bg-slate-300 rounded-full p-2' >
               {isVisible ? <Eye weight='duotone' size={24}/> : <EyeClosed weight='duotone' size={24}/>}
             </div>
           </div>

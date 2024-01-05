@@ -73,7 +73,9 @@ export default function SearchBar() {
   }
   function checkQueryUser(user: UserData): boolean {
     //verify if the user is not searching for himself
-    if(user.username === stringUsername) return false
+    if(user.username === stringUsername) {
+      return false
+    } 
     //verify if the users is not in usersChats
     const isUserInChats = Object.entries(userChats).some((chat: any) => {
       return chat[1].userInfo.uid === user.uid
@@ -82,22 +84,26 @@ export default function SearchBar() {
   }
   async function handleSearch() {
     const q = query(collection(db, 'users'), where('username', '==', queryInput.trim()))
-    try { 
+    try {
       const querySnapshot = await getDocs(q)
-      if(!querySnapshot.empty) {
-        querySnapshot.forEach((doc) => {
-          setQueryUser(doc.data() as UserData)
-        })
-      } else setQueryUser(null)
-      if(queryUser) {
-        checkQueryUser(queryUser)
-        if(checkQueryUser(queryUser)) setUser(queryUser)
-      }
+      // reset queryUser before processing the results
+      setQueryUser(null)
+  
+      if (!querySnapshot.empty) {
+        const users = querySnapshot.docs.map((doc) => doc.data() as UserData)
+        const validUser = users.find((user) => checkQueryUser(user))
+  
+        if (validUser) {
+          setQueryUser(validUser)
+          setUser(validUser)
+        } else setUser(null)
+      } else setUser(null)
     } catch (error) {
-      setError(true)   
+      setError(true)
+      console.error('Error during search:', error)
     }
-    
   }
+  
   
   return (
     <div>
@@ -111,7 +117,7 @@ export default function SearchBar() {
           handleClick()
         }}
         className='hover:bg-jet border border-neon-blue p-4 py-3 rounded-xl cursor-pointer mb-2'>
-        <BasicInfo img={user.photoURL} name={user.name} />
+        <BasicInfo img={user.photoURL} name={user.name} showActivity={false} />
         </div>
       } 
     </div>
