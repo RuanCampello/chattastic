@@ -1,8 +1,8 @@
 'use client'
+import { AuthContext } from './AuthContext'
 import { createContext, useContext, useReducer, useEffect } from 'react'
 import { onSnapshot, doc } from 'firebase/firestore'
 import { db } from '@/firebase'
-import { AuthContext } from './AuthContext'
 
 export const ChatContext = createContext()
 
@@ -15,7 +15,7 @@ export const ChatContextProvider = ({ children }) => {
   }
   
   const chatReducer = (state, action) => {
-    if(!currentUser || action) return 
+    if(!currentUser || !action || !action.type) return 
     switch (action.type) {
       case 'CHANGE_USER':
         return {
@@ -32,23 +32,25 @@ export const ChatContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE)
 
   useEffect(() => {
-    async function fetchUsersData() {
-      const userDocRef = doc(db, 'users', state.user.uid)
-      const unsubscribe = onSnapshot(userDocRef, (userDoc) => {
-        const data = userDoc.data()
-        const userStatus = data ? data.status : 'offline'
-        const userLastOnline = data.lastOnline.seconds * 1000
-        const updatedUser = {
-          ...state.user,
-          status: userStatus,
-          lastOnline: userLastOnline,
-        }
-        dispatch({ type: 'CHANGE_USER', payload: updatedUser })
-      })
-      return () => unsubscribe()
+    if (state && state.user && state.user.uid) {
+      async function fetchUsersData() {
+        const userDocRef = doc(db, 'users', state.user.uid)
+        const unsubscribe = onSnapshot(userDocRef, (userDoc) => {
+          const data = userDoc.data()
+          const userStatus = data ? data.status : 'offline'
+          const userLastOnline = data.lastOnline.seconds * 1000
+          const updatedUser = {
+            ...state.user,
+            status: userStatus,
+            lastOnline: userLastOnline,
+          }
+          dispatch({ type: 'CHANGE_USER', payload: updatedUser })
+        })
+        return () => unsubscribe()
+      }
+      fetchUsersData()
     }
-    state.user.uid && fetchUsersData()
-  }, [state.user.uid])
+  }, [state])
 
   return (
     <ChatContext.Provider value={{ userData: state, dispatch }}>

@@ -1,3 +1,4 @@
+import { ChatContext } from '@/context/ChatContext'
 import { AuthContext } from '@/context/AuthContext'
 import { auth, db } from '@/firebase'
 import { SignOut } from '@phosphor-icons/react'
@@ -5,7 +6,6 @@ import { signOut } from 'firebase/auth'
 import { collection, doc, getDocs, onSnapshot, query, serverTimestamp, setDoc, where } from 'firebase/firestore'
 import { useContext, useEffect, useState } from 'react'
 import { UserActivityType } from './chats'
-import { ChatContext } from '@/context/ChatContext'
 
 export async function updateUserStatus(userId: string, status: string) {
   const userRef = doc(db, 'users', userId)
@@ -16,25 +16,27 @@ export async function updateUserStatus(userId: string, status: string) {
 }
 
 export default function Navbar() {
-  const [error, setError] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
   const { currentUser } = useContext(AuthContext)
   const { dispatch } = useContext(ChatContext)
+
+  const [error, setError] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
   const [currentUserStatus, setCurrentUserStatus] = useState<UserActivityType>()
   const username = typeof window !== 'undefined' ? sessionStorage.getItem(`username_${currentUser.uid}`) : null
   const currentUserId = currentUser.uid
+  
 
   async function getUsername() {
     try {
-      if(!currentUser.email) return
-      const usernameQuery = await getDocs(query(collection(db, 'users'), where('email', '==', currentUser.email)))
+      if(!currentUser.uid) return
+      const usernameQuery = await getDocs(query(collection(db, 'users'), where('uid', '==', currentUserId)))      
       
       if (usernameQuery.docs.length > 0) {
         const userData = usernameQuery.docs[0].data()
         sessionStorage.setItem(`username_${currentUserId}`, userData.username)
         setError(false) // reset error state if successful
       } else {
-        // handle the case where no user is found for the given email
+        // handle the case where no user is found for the given uid
         setError(true)
       }
     } catch (error) {
@@ -54,7 +56,7 @@ export default function Navbar() {
   useEffect(() => {
     const getUserStatus = () => {
       if (currentUser.uid) {
-        const userRef = doc(db, 'users', currentUserId)
+        const userRef = doc(db, 'users', currentUser.uid)
         return onSnapshot(userRef, (doc) => {
           const data = doc.data()
           setCurrentUserStatus(data?.status || 'offline')
@@ -67,7 +69,7 @@ export default function Navbar() {
 
   useEffect(() => {
     getUsername()
-  }, [username, currentUser.email, currentUser])
+  }, [username, currentUser.uid, currentUser])
 
   return (
     <div className='2xl:rounded-bl-lg flex items-center justify-between p-4 w-full bg-eerie-black border-t border-neon-blue'>

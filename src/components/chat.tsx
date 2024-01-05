@@ -6,6 +6,8 @@ import { ChatContext } from '@/context/ChatContext'
 
 export default function Chat() {
   const { userData } = useContext(ChatContext)
+  
+  if (!userData || !userData.user || Object.keys(userData.user).length === 0) return null
   return (
     <div className='w-2/3 2xl:w-3/4 2xl:rounded-r-lg p-2 pb-0 flex flex-col'>
       {userData.user && Object.keys(userData.user).length > 0 &&

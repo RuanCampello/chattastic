@@ -18,7 +18,7 @@ export default function Login() {
     e.preventDefault()
 
     const email = e.target.email.value
-    const password = e.target.password.value
+    const password = e.target.password.value    
     try {
       await signInWithEmailAndPassword(auth, email, password)
       router.replace('/')
@@ -31,7 +31,7 @@ export default function Login() {
   }
   return (
     <MenuWrapper>
-      <Form.Root onSubmitFunction={() => handleSubmit}>
+      <Form.Root onSubmitFunction={handleSubmit}>
         <Form.Header title='Nice to see you again' />
         <div className='flex flex-col gap-4'>
           <input
@@ -53,11 +53,7 @@ export default function Login() {
                 {isVisible ? <Eye weight='duotone' size={24}/> : <EyeClosed weight='duotone' size={24}/>}
               </div>
             </div>
-            <button
-             onClick={() => handleForgotPassword()}
-             className='text-end text-neon-blue hover:underline text-sm mt-2 font-medium'>
-              forgot password?
-            </button>
+            <Form.Link title='Forgot your password?' text='' path='/forgotpassword' />
           </div>
         </div>
         <Form.Button title='Sign in'/>

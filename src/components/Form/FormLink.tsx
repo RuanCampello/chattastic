@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 interface FormLinkProps {
-  text: string
+  text?: string
   path: string
   title: string
 }
