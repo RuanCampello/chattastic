@@ -71,10 +71,10 @@ export default function InputMessage() {
         })
       })
     }
+    setSelectedMessage(null)
     setText('')
     setFile(null)
     setEmojiPickerVisible(false)
-    setSelectedMessage(null)
   }
   
   return (
@@ -107,15 +107,15 @@ export default function InputMessage() {
             }
           }}
           type='file' className='hidden' id='file' />
-          <label className='cursor-pointer hover:bg-jet p-2 rounded-full transition duration-500 ease-in-out' htmlFor='file'>
+          <label className='cursor-pointer hover:bg-jet p-2 rounded-full transition-colors duration-300' htmlFor='file'>
             <Image size={28} weight='duotone' />
           </label>
           <button 
            type='button' 
-           onClick={() => setEmojiPickerVisible(!emojiPickerVisible)} className='hover:bg-jet p-2 rounded-full transition duration-500 ease-in-out'>
+           onClick={() => setEmojiPickerVisible(!emojiPickerVisible)} className='hover:bg-jet p-2 rounded-full transition-colors duration-300'>
             <Smiley size={28} weight='duotone'/>
           </button>
-          <button disabled={text.trim() === '' && file === null} onClick={handleClick} className='hover:bg-jet p-2 rounded-full transition duration-500 ease-in-out'>
+          <button disabled={text.trim() === '' && file === null} onClick={handleClick} className='hover:bg-jet p-2 rounded-full transition-colors duration-300'>
             <PaperPlaneRight size={28} weight='duotone' />
           </button>
         </div>

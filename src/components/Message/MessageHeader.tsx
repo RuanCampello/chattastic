@@ -1,6 +1,6 @@
-import { AuthContext } from '@/context/AuthContext';
+import { AuthContext } from '@/context/AuthContext'
 import { ChatContext } from '@/context/ChatContext'
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react'
 
 interface MessageHeaderProps {
   repliedMessage: string
@@ -31,6 +31,6 @@ export default function MessageHeader({ repliedMessage, repliedOwner, owner, sen
         <span>{getSender()} replied to {getReceiver()}</span>
       </div>
       <div className='bg-eerie-black p-2 rounded-xl w-fit truncate max-w-[50vw] mb-1'>{repliedMessage}</div>
-    </div>
+    </div>    
   )
 }

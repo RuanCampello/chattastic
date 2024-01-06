@@ -73,7 +73,7 @@ export default function Chats() {
       {
         Object.entries(chats)?.map((chat) => {
           return (
-            <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className={`hover:bg-jet p-2 px-3 rounded-xl cursor-pointer active:bg-jet/70 mb-2 ${chat[1]['userInfo']['uid'] === userData.user.uid && 'bg-jet'}`}>
+            <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className={`hover:bg-jet p-2 px-3 rounded-xl cursor-pointer active:bg-jet/70 mb-2 transition-colors duration-300 ${chat[1]['userInfo']['uid'] === userData.user.uid && 'bg-jet'}`}>
             <BasicInfo img={chat[1]['userInfo']['photoURL']} name={chat[1]['userInfo']['displayName']} activity={userActivities[chat[1]['userInfo']['uid']]}/>
           </div>
           )  

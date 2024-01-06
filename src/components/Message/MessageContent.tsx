@@ -1,7 +1,6 @@
 import { MessageContext } from '@/context/MessageContext'
 import { ArrowBendUpLeft } from '@phosphor-icons/react'
-import * as Tooltip from '@radix-ui/react-tooltip'
-import { useContext, useEffect } from 'react'
+import { useContext } from 'react'
 import TooltipWrapper from '../tooltip'
 
 interface MessageContentProps {

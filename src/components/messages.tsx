@@ -28,7 +28,7 @@ const Messages = memo(() => {
   }, [messages])
 
   return (
-    <div ref={chatContainerRef} className='px-4 pt-4 w-full overflow-y-auto scrollbar scrollbar-w-3 scrollbar-track-jet scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg'>
+    <div ref={chatContainerRef} className='px-4 pt-4 w-full overflow-y-auto scroll-smooth scrollbar scrollbar-w-3 scrollbar-track-jet scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg '>
       {messages.map((ms, index) => {
         const isOwner = ms['senderId'] === currentUser.uid
         const timestamp = ms['date']['seconds']
@@ -47,10 +47,9 @@ const Messages = memo(() => {
           >
             <Message.Root>
               {repliedMessage && (
-                <div className={`flex items-center ${isOwner ? 'justify-end' : ''} gap-2`}>
-                  {!isOwner && <div className={`w-1 bg-eerie-black h-9 mt-auto mb-1 rounded-full`}></div>}
+                <div className={`flex items-center ${isOwner && 'justify-end' } gap-2`}>
                   <Message.Header senderId={ms['senderId']} receiverUid={repliedMessage.receiverUid} repliedOwner={repliedMessage.repliedOwner} owner={isOwner} repliedMessage={repliedMessage.repliedText}/>
-                  {isOwner && <div className={`w-1 bg-eerie-black h-9 mt-auto mb-1 rounded-full`}></div>}
+                  <div className={`w-1 bg-eerie-black h-9 mt-auto mb-1 rounded-full ${isOwner ? 'order-last' : 'order-first'}`}></div>
                 </div>
               )}
               <Message.Content time={formatTime(date)} imgURL={ms['img']} text={ms['text']} owner={isOwner}/>
