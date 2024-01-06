@@ -6,7 +6,7 @@ interface FormLinkProps {
   title: string
 }
 
-export default async function FormLink({text, path, title}: FormLinkProps) {
+export default function FormLink({text, path, title}: FormLinkProps) {
   return (
     <div className='my-2 text-sm font-medium'>
       {text} 

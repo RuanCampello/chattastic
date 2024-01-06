@@ -75,7 +75,7 @@ export default function Navbar() {
       )}
       {!isLoading && (
         <button
-          onClick={handleLogOut}
+          onClick={() => handleLogOut()}
           title='Log out'
           type='button'
           className='p-2 rounded-full transition duration-500 ease-in-out text-neon-blue hover:bg-jet'

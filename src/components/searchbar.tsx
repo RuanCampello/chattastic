@@ -21,8 +21,6 @@ export default function SearchBar() {
   const [queryInput, setQuery] = useState(String)
   const [user, setUser] = useState<UserData | null>(null)
   const [error, setError] = useState(false)
-
-  const stringUsername = currentUser?.username?.replace('@', '')
   
   async function handleClick() {
     if(user && currentUser) { 
@@ -70,7 +68,7 @@ export default function SearchBar() {
   }
   function checkQueryUser(user: UserData): boolean {
     //verify if the user is not searching for himself
-    if(user.username === stringUsername) return false
+    if(`@${user.username}` === currentUser.username.value) return false
     //verify if the users is not in usersChats
     const isUserInChats = Object.entries(userChats).some((chat: any) => {
       return chat[1].userInfo.uid === user.uid
@@ -92,7 +90,7 @@ export default function SearchBar() {
       } else setUser(null)
     } catch (error) {
       setError(true)
-      console.error('Error during search:', error)
+      
     }
   }
   

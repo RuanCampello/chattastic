@@ -32,7 +32,6 @@ export default function Chats() {
   const [userActivities, setUserActivities] = useState<UserActivityType>({})
   const [usersLastOnline, setUsersLastOnline] = useState<UserLastOnline>({})
   
-
   useEffect(() => {
     const getChats = () => {
       const unsubChats = onSnapshot(doc(db, 'userChats', currentUser.uid), (doc) => {
@@ -61,7 +60,6 @@ export default function Chats() {
   }, [currentUser.uid])
   
   function handleSelectUser(user: any) {
-    if(userData.user.uid === user.uid) return
     const selectedUser = {
       ...user,
     }

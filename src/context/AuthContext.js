@@ -8,20 +8,28 @@ export const AuthContext = createContext()
 
 export const AuthContextProvider = ({children}) => {
   const [currentUser, setUser] = useState({})
-  const [isLoading, setIsLoading] = useState(true) 
+  const [isLoading, setIsLoading] = useState(true)
+
+  async function getUsername(user) {
+    const ref = collection(db, 'users')
+    const q = query(ref, where('uid', '==', user.uid))
+    const snap = await getDocs(q)
+    if(snap.docs.length > 0) {
+      const username = snap.docs[0].data().username
+      return '@'+username
+    }
+  }
 
   useEffect(() => {
-    const unsub = onAuthStateChanged(auth, async (user) => {
-      const ref = collection(db, 'users')
-      const q = query(ref, where('uid', '==', user.uid))
-      const snap = await getDocs(q)
-      if(snap.docs.length > 0) {
-        const username = snap.docs[0].data().username
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setUser(user)
+      if(user?.uid) {
+        const username = getUsername(user)
         setUser({
           ...user,
-          username: '@'+username
+          username: username
         })
-      } else setUser(user)
+      }
       setIsLoading(false)
     })
     return () => unsub()
