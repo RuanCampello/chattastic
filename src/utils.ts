@@ -4,7 +4,7 @@ export function formatTime(date: Date) {
   const diffInMinutes = Math.floor(diffInMilliseconds / (60 * 1000))
 
   if (diffInMinutes <= 1) {
-    return 'Just now';
+    return 'Just now'
   } else if (
     date.getDate() === now.getDate() &&
     date.getMonth() === now.getMonth() &&

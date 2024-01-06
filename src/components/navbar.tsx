@@ -7,6 +7,7 @@ import { doc,  onSnapshot,  serverTimestamp, setDoc } from 'firebase/firestore'
 import { useContext, useEffect, useState } from 'react'
 import { UserActivityType } from './chats'
 import Image from 'next/image'
+import TooltipWrapper from './tooltip'
 
 export async function updateUserStatus(userId: string, status: string) {
   const userRef = doc(db, 'users', userId)
@@ -24,9 +25,13 @@ export default function Navbar() {
   const currentUserId = currentUser.uid
 
   async function handleLogOut() {
-    await updateUserStatus(currentUserId, 'offline')
-    dispatch(null)
-    signOut(auth)
+    try {
+      await updateUserStatus(currentUserId, 'offline')
+      dispatch({ type:'LOG_OUT' })
+      signOut(auth)
+    } catch(error) {
+      console.error(error)
+    }
   }
   useEffect(() => {
     const getUserStatus = () => {
@@ -74,14 +79,15 @@ export default function Navbar() {
         </div>
       )}
       {!isLoading && (
-        <button
-          onClick={() => handleLogOut()}
-          title='Log out'
-          type='button'
-          className='p-2 rounded-full transition duration-500 ease-in-out text-neon-blue hover:bg-jet'
-        >
-          <SignOut size={24} weight='duotone' />
-        </button>
+        <TooltipWrapper content='Log out'>
+          <button
+            onClick={() => handleLogOut()}
+            type='button'
+            className='p-2 rounded-full transition duration-500 ease-in-out text-neon-blue hover:bg-jet'
+          >
+            <SignOut size={24} weight='duotone' />
+          </button>
+        </TooltipWrapper>
       )}
     </div>
   )

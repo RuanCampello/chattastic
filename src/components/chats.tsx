@@ -59,9 +59,12 @@ export default function Chats() {
     currentUser.uid && getChats()
   }, [currentUser.uid])
   
-  function handleSelectUser(user: any) {
+  function handleSelectUser(user: any) {   
+    if(userData && userData.user.uid === user.uid) return
+    
     const selectedUser = {
       ...user,
+      lastOnline: usersLastOnline[user.uid].seconds*1000
     }
     dispatch({ type:'CHANGE_USER', payload: selectedUser })
   }
@@ -70,7 +73,7 @@ export default function Chats() {
       {
         Object.entries(chats)?.map((chat) => {
           return (
-            <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className='hover:bg-jet p-3 rounded-xl cursor-pointer mb-1'>
+            <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className={`hover:bg-jet p-2 px-3 rounded-xl cursor-pointer active:bg-jet/70 mb-2 ${chat[1]['userInfo']['uid'] === userData.user.uid && 'bg-jet'}`}>
             <BasicInfo img={chat[1]['userInfo']['photoURL']} name={chat[1]['userInfo']['displayName']} activity={userActivities[chat[1]['userInfo']['uid']]}/>
           </div>
           )  

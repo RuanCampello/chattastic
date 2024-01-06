@@ -25,6 +25,8 @@ export const ChatContextProvider = ({ children }) => {
               ? currentUser.uid + action.payload.uid
               : action.payload.uid + currentUser.uid,
         }
+      case 'LOG_OUT':
+        return INITIAL_STATE
       default:
         return state
     }
@@ -38,6 +40,7 @@ export const ChatContextProvider = ({ children }) => {
         const unsubscribe = onSnapshot(userDocRef, (userDoc) => {
           const data = userDoc.data()
           const userStatus = data ? data.status : 'offline'
+          if(!data?.lastOnline) return
           const userLastOnline = data.lastOnline.seconds * 1000
           const updatedUser = {
             ...state.user,
@@ -50,7 +53,7 @@ export const ChatContextProvider = ({ children }) => {
       }
       fetchUsersData()
     }
-  }, [state])
+  }, [state?.user?.uid, state?.chatId])
 
   return (
     <ChatContext.Provider value={{ userData: state, dispatch }}>

@@ -78,14 +78,14 @@ export default function InputMessage() {
   }
   
   return (
-    <div className={`p-2 ${selectedMessage && 'border-t border-eerie-black'}`} >
+    <div className={`p-2 ${selectedMessage && 'border-t-2 border-eerie-black'}`} >
       {selectedMessage &&
-      <div className='flex justify-between items-center mb-2'>
+      <div className='flex justify-between items-center mb-2 font-medium'>
         <div className='mb-2 flex flex-col overflow-hidden'>
-        <span className={'text-neutral-400'}>
+        <span className='text-neutral-300'>
           Replying to {selectedMessage.owner ? 'yourself' : <b>{userData.user.displayName}</b>}
         </span>
-        <p className='text-neutral-300 font-medium truncate'>{selectedMessage.text}</p>
+        <p className='text-neutral-200 truncate'>{selectedMessage.text}</p>
         </div>            
         <button onClick={() => setSelectedMessage(null)} className='text-neutral-300'>
           <XCircle size={24} weight='duotone' />

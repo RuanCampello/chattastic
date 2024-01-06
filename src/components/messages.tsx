@@ -28,7 +28,7 @@ const Messages = memo(() => {
   }, [messages])
 
   return (
-    <div ref={chatContainerRef} className='px-4 mt-4 w-full overflow-y-auto scrollbar scrollbar-w-3 scrollbar-track-jet scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg'>
+    <div ref={chatContainerRef} className='px-4 pt-4 w-full overflow-y-auto scrollbar scrollbar-w-3 scrollbar-track-jet scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg'>
       {messages.map((ms, index) => {
         const isOwner = ms['senderId'] === currentUser.uid
         const timestamp = ms['date']['seconds']

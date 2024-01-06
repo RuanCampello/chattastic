@@ -16,14 +16,14 @@ export const metadata: Metadata = {
 
 const contextWrapper = (children: ReactNode) => (
   <AuthContextProvider>
-      <ChatContextProvider>
-        <MessageContextProvider>
-          <UserChatsContextProvider>
-            {children}
-          </UserChatsContextProvider>
-        </MessageContextProvider>
-      </ChatContextProvider>
-    </AuthContextProvider>
+    <ChatContextProvider>
+      <MessageContextProvider>
+        <UserChatsContextProvider>
+          {children}
+        </UserChatsContextProvider>
+      </MessageContextProvider>
+    </ChatContextProvider>
+  </AuthContextProvider>
 )
 
 export default function RootLayout({
