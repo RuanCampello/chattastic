@@ -11,7 +11,7 @@ export default function InfoImage({name, source}: InfoImageProps) {
       src={source}
       width={48}
       height={48}
-      className={'rounded-full object-cover h-10 w-10'}
+      className={'rounded-full object-cover h-10 w-10 group-hover:scale-105 transition-transform duration-300'}
     />
   )
 }

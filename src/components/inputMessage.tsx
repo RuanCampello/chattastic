@@ -92,37 +92,36 @@ export default function InputMessage() {
         </button>
       </div>
       }
-      <form onSubmit={e => e.preventDefault()} className='w-full text-neutral-400 bg-eerie-black rounded-3xl font-semibold flex items-center px-4 p-1'>
+      <form onSubmit={e => e.preventDefault()} className='w-full text-neutral-400 bg-eerie-black rounded-3xl font-semibold flex items-center p-1'>
+      <button 
+          type='button' 
+          onClick={() => setEmojiPickerVisible(!emojiPickerVisible)} className='hover:bg-jet p-2 rounded-full transition-colors duration-300'>
+          <Smiley size={28} weight='duotone'/>
+        </button>
         {/* scrollable input */}
         <input
         value={text}
         onChange={(e) => setText(e.target.value)} 
-        className='w-full p-2 focus:outline-none bg-eerie-black placeholder:text-neutral-500 ' type='text' 
+        className='w-full ps-0 p-2 focus:outline-none bg-eerie-black placeholder:text-neutral-500' type='text' 
         placeholder={`type your message to ${userData.user.displayName}...`}/>
         <div className='flex gap-1'>
           <input onChange={(e) => {
             const selectedFile = e.target.files?.[0]
-            if(selectedFile) {
-              setFile(selectedFile)
-            }
+            if(selectedFile) setFile(selectedFile)
           }}
           type='file' className='hidden' id='file' />
           <label className='cursor-pointer hover:bg-jet p-2 rounded-full transition-colors duration-300' htmlFor='file'>
             <Image size={28} weight='duotone' />
           </label>
-          <button 
-           type='button' 
-           onClick={() => setEmojiPickerVisible(!emojiPickerVisible)} className='hover:bg-jet p-2 rounded-full transition-colors duration-300'>
-            <Smiley size={28} weight='duotone'/>
-          </button>
           <button disabled={text.trim() === '' && file === null} onClick={handleClick} className='hover:bg-jet p-2 rounded-full transition-colors duration-300'>
             <PaperPlaneRight size={28} weight='duotone' />
           </button>
         </div>
       </form>
-      <div className='absolute right-[1vw] bottom-[10vh]'>
+      <div className={`absolute left-0 ${selectedMessage ? 'bottom-[14.75vh]' : 'bottom-[7vh]'} emoji-picker-container`}>
         {emojiPickerVisible && 
-          <Picker 
+          <Picker
+           id={'emoji-picker-container'}
            data={data}
            theme={'dark'}
            previewPosition={'none'}
@@ -130,7 +129,8 @@ export default function InputMessage() {
            emojiButtonSize={42}
            perLine={7}
            emojiSize={32}
-           onEmojiSelect={handleEmojiSelection as any} 
+           emojiButtonColors={['#5B68F1']}
+           onEmojiSelect={handleEmojiSelection as any}
           />
         }
       </div>

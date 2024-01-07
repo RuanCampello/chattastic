@@ -12,7 +12,7 @@ export default function Version() {
         </div>
         <div className='flex flex-col'>
           <h4 className='text-neutral-200 font-bold text-lg leading-5'>Chattastic</h4>
-          <h5 className='leading-3 text-neutral-400 text-sm font-medium'>v-1.0</h5>
+          <h5 className='leading-3 text-neutral-400 text-sm font-semibold'>v-1.0</h5>
         </div>
       </div>
       <TooltipWrapper side='left' content='View source'>
