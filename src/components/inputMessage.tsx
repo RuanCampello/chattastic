@@ -102,7 +102,7 @@ export default function InputMessage() {
         <input
         value={text}
         onChange={(e) => setText(e.target.value)} 
-        className='w-full ps-0 p-2 focus:outline-none bg-eerie-black placeholder:text-neutral-500' type='text' 
+        className='w-full ps-0 p-2 focus:outline-none bg-eerie-black placeholder:truncate placeholder:text-neutral-500 placeholder:text-sm md:placeholder:text-base' type='text' 
         placeholder={`type your message to ${userData.user.displayName}...`}/>
         <div className='flex gap-1'>
           <input onChange={(e) => {

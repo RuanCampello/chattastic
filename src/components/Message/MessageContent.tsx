@@ -23,7 +23,7 @@ export default function MessageContent({owner, imgURL, text, time}: MessageConte
         }
         {text}
       </div>
-        <TooltipWrapper content='Reply'>
+        <TooltipWrapper side='top' content='Reply'>
           <button onClick={handleReply}>
             <ArrowBendUpLeft className='text-neutral-500 hover:text-neutral-400 invisible group-hover:visible' weight='fill' size={20} />
           </button>
