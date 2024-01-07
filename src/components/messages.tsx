@@ -28,7 +28,7 @@ const Messages = memo(() => {
   }, [messages])
 
   return (
-    <div ref={chatContainerRef} className='px-4 pt-4 w-full overflow-y-auto scroll-smooth scrollbar scrollbar-w-3 scrollbar-track-jet scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg '>
+    <div ref={chatContainerRef} className='md:px-4 pt-4 w-full overflow-y-auto scroll-smooth scrollbar scrollbar-w-3 scrollbar-track-jet scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg '>
       {messages.map((ms, index) => {
         const isOwner = ms['senderId'] === currentUser.uid
         const timestamp = ms['date']['seconds']
@@ -40,6 +40,7 @@ const Messages = memo(() => {
           (index > 0 &&(messages[index + 1]['senderId'] !== ms['senderId'] ||
           date.getTime() - new Date(messages[index - 1]['date']['seconds'] * 1000).getTime() > 5 * 60 * 1000)) || index === 0 ||
           ms['img'] || false
+
         return (
           <div 
             key={index} 

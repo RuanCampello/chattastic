@@ -7,7 +7,7 @@ import { MessageContextProvider } from '@/context/MessageContext'
 import { UserChatsContextProvider } from '@/context/UserChatsContext'
 import { ReactNode } from 'react'
 
-const urbanist = Urbanist({ weight: ['400', '500', '600'], subsets: ['latin'] })
+const urbanist = Urbanist({ weight: ['400', '500', '600', '700'], subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: 'Chattastic',

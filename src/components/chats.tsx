@@ -1,16 +1,16 @@
 import { useContext, useEffect, useState } from 'react'
-import BasicInfo from './basicInfo'
 import { Timestamp, collection, doc, onSnapshot } from 'firebase/firestore'
 import { db } from '@/firebase'
 import { AuthContext } from '@/context/AuthContext'
 import { ChatContext } from '@/context/ChatContext'
 import { UserChatsContext } from '@/context/UserChatsContext'
+import { Info } from './Info'
 
 type ChatType = {
   [chatId: string]: {
     userInfo: {
       uid: string
-      photoURL?: string
+      photoURL: string
       displayName: string
       status: 'online' | 'away' | 'offline'
     }
@@ -72,9 +72,17 @@ export default function Chats() {
     <div>
       {
         Object.entries(chats)?.map((chat) => {
+          const userInfo = chat[1]['userInfo']
+          
           return (
-            <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className={`hover:bg-jet p-2 px-3 rounded-xl cursor-pointer active:bg-jet/70 mb-2 transition-colors duration-300 ${chat[1]['userInfo']['uid'] === userData.user.uid && 'bg-jet'}`}>
-            <BasicInfo img={chat[1]['userInfo']['photoURL']} name={chat[1]['userInfo']['displayName']} activity={userActivities[chat[1]['userInfo']['uid']]}/>
+            <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className={`hover:bg-jet flex items-center md:justify-start justify-center p-1 py-2 md:p-2 md:px-3 rounded-xl cursor-pointer active:bg-jet/70 mb-2 transition-colors duration-300 ${chat[1]['userInfo']['uid'] === userData.user.uid && 'bg-jet'}`}>
+            <Info.Root>
+              <Info.Avatar>
+                <Info.Image name={userInfo['displayName']} source={userInfo['photoURL']} />
+                <Info.Activity activity={userActivities[userInfo['uid']]} />
+              </Info.Avatar>
+              <Info.Content hideOnSmallScreens={true} name={userInfo['displayName']} activity={userActivities[userInfo['uid']]} />
+            </Info.Root>
           </div>
           )  
         })

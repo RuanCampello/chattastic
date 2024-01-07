@@ -30,7 +30,7 @@ export default function MessageHeader({ repliedMessage, repliedOwner, owner, sen
       <div className='my-1'>
         <span>{getSender()} replied to {getReceiver()}</span>
       </div>
-      <div className='bg-eerie-black p-2 rounded-xl w-fit truncate max-w-[50vw] mb-1'>{repliedMessage}</div>
+      <div className={`${repliedOwner && owner ? 'bg-neon-blue text-neutral-200' : 'bg-eerie-black'} p-2 rounded-xl w-fit truncate max-w-[35vw] mb-1`}>{repliedMessage}</div>
     </div>    
   )
 }

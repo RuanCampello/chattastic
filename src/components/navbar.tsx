@@ -6,8 +6,8 @@ import { signOut } from 'firebase/auth'
 import { doc,  onSnapshot,  serverTimestamp, setDoc } from 'firebase/firestore'
 import { useContext, useEffect, useState } from 'react'
 import { UserActivityType } from './chats'
-import Image from 'next/image'
 import TooltipWrapper from './tooltip'
+import { Info } from './Info'
 
 export async function updateUserStatus(userId: string, status: string) {
   const userRef = doc(db, 'users', userId)
@@ -47,12 +47,14 @@ export default function Navbar() {
     return () => unsubscribe && unsubscribe()
   }, [currentUser])
 
+  const currentUserActivity = String(currentUserStatus)
+
   return (
-    <div className='2xl:rounded-bl-lg flex items-center justify-between p-4 w-full bg-eerie-black border-t border-neon-blue'>
+    <div className='2xl:rounded-bl-lg flex items-center md:justify-between justify-center p-2 py-3 md:p-4 w-full bg-eerie-black border-t border-neon-blue'>
       {isLoading ? (
         // skeleton while is loading
         <div className='flex items-center gap-4'>
-          <div className='h-11 w-11 bg-gray-500 rounded-full animate-pulse' />
+          <div className='h-10 w-10 bg-gray-500 rounded-full animate-pulse' />
           <div className='flex flex-col gap-1'>
             <div className='h-4 bg-gray-500 w-20 animate-pulse rounded-full' />
             <div className='h-3 bg-gray-500 w-16 animate-pulse rounded-full' />
@@ -60,30 +62,20 @@ export default function Navbar() {
         </div>
       ) : (
         // loaded content
-        <div className='flex items-center gap-4'> 
-          <div className='flex relative'>
-            <Image
-            alt='your profile picture'
-            width={48}
-            height={48}
-            src={currentUser.photoURL} 
-            className='h-11 w-11 rounded-full object-cover' 
-            />
-            <div className={`h-4 w-4 rounded-full absolute bottom-0 -right-1 border-[3px] border-eerie-black ${String(currentUserStatus) === 'online' ? 'bg-pigment-green' : String(currentUserStatus) === 'away' ? 'bg-xanthous' : 'bg-imperial-red'}`}></div>
-          </div>
-          <div className='flex flex-col gap-1'>
-            <h2 className='text-lg text-start font-medium leading-4'>{currentUser.displayName}</h2>
-            {!isLoading &&
-            <h3 className='text-neon-blue leading-3 font-bold'>{currentUser.username}</h3>}
-          </div>
-        </div>
+        <Info.Root>
+          <Info.Avatar>
+            <Info.Image name={currentUser['displayName']} source={currentUser['photoURL']} />
+            <Info.Activity activity={currentUserActivity} />
+          </Info.Avatar>
+          <Info.Content isLoading={isLoading} hideOnSmallScreens={true} name={currentUser['displayName']} activity={currentUserActivity} username={currentUser.username} />
+        </Info.Root>
       )}
       {!isLoading && (
         <TooltipWrapper content='Log out'>
           <button
             onClick={() => handleLogOut()}
             type='button'
-            className='p-2 rounded-full transition duration-500 ease-in-out text-neon-blue hover:bg-jet'
+            className='p-2 rounded-full transition duration-500 ease-in-out text-neon-blue hover:bg-jet md:block hidden'
           >
             <SignOut size={24} weight='duotone' />
           </button>

@@ -1,11 +1,11 @@
 import { db } from '@/firebase'
 import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore'
-import { FormEvent, useContext, useEffect, useState } from 'react'
-import BasicInfo from './basicInfo'
+import { FormEvent, useContext, useState } from 'react'
 import { AuthContext } from '@/context/AuthContext'
 import { MagnifyingGlass } from '@phosphor-icons/react'
 import { ChatContext } from '@/context/ChatContext'
 import { UserChatsContext } from '@/context/UserChatsContext'
+import { Info } from './Info'
 
 export type UserData = {
   uid: string
@@ -96,7 +96,7 @@ export default function SearchBar() {
   
   return (
     <div>
-      <form onSubmit={handleSubmit} className='my-4 flex items-center bg-jet rounded-xl w-full text-neutral-300'>
+      <form onSubmit={handleSubmit} className='mb-3 flex items-center bg-jet rounded-xl w-full text-neutral-300'>
         <MagnifyingGlass size={18} weight='bold' className='text-neutral-400 ml-3' />
         <input value={queryInput} onChange={e => setQuery(e.target.value)} className='w-full rounded-xl font-semibold focus:outline-none p-2 placeholder:text-neutral-400 placeholder:font-semibold leading-4 bg-jet' type='text' placeholder='search user...' />
       </form>
@@ -106,7 +106,10 @@ export default function SearchBar() {
           handleClick()
         }}
         className='hover:bg-jet border border-neon-blue p-4 py-3 rounded-xl cursor-pointer mb-2'>
-        <BasicInfo img={user.photoURL} name={user.name} showActivity={false} />
+        <Info.Root>
+          <Info.Image name={user.name} source={user.photoURL} />
+          <Info.Content name={user.name} username={user.username} />
+        </Info.Root>
         </div>
       } 
     </div>
