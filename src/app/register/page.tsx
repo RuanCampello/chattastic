@@ -1,6 +1,5 @@
 'use client'
-import InputSection from '@/components/inputSection'
-import { Eye, EyeClosed, ImageSquare } from '@phosphor-icons/react'
+import { At, EnvelopeSimple, ImageSquare, Password, User } from '@phosphor-icons/react'
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import { auth, db, storage } from '@/firebase'
 import { useState } from 'react'
@@ -9,11 +8,15 @@ import { collection, doc, getDocs, query, setDoc, where } from 'firebase/firesto
 import { useRouter } from 'next/navigation'
 import MenuWrapper from '@/components/menuwrapper'
 import { Form } from '@/components/Form'
+import { Input } from '@/components/Input'
 
 export default function Register() {
-  const [isVisible, setIsVisible] = useState(false)
   const [error, setError] = useState(false)
+  const [isVisible, setIsVisible] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
+
+  const toogleVisibly = () => setIsVisible(!isVisible)
 
   async function checkUsernameExists(username: string): Promise<boolean> {
     const usernameQuery = await getDocs(query(collection(db, 'users'), where('username', '==', username)))
@@ -21,11 +24,14 @@ export default function Register() {
   }
   async function handleSubmit(e: any) {
     e.preventDefault()
+    setIsLoading(true)
     const name = e.target.name.value
     const email = e.target.email.value
     const password = e.target.password.value
     const username = e.target.username.value
     const photo = e.target.photo.files[0]
+
+    if(!name || !email || !password || !username || !photo) return
 
     //check uniqueness of the username
     const usernameExists = await checkUsernameExists(username)
@@ -68,22 +74,30 @@ export default function Register() {
       <Form.Root onSubmitFunction={handleSubmit}>
         <Form.Header title='Register' />
         <div className='flex flex-col gap-4'>
-          <InputSection name='name' placeholder='Name'/>
-          <InputSection type='text' name='username' placeholder='Username'/>
-          <InputSection type='email' name='email' placeholder='E-mail'/>
-          <div className='flex items-center w-full relative'>
-            <input className='p-3 bg-slate-200 rounded-md w-full focus:outline-none' type={isVisible ? 'text' : 'password'} name='password' placeholder='Password' />
-            <div onClick={() => setIsVisible(!isVisible)} className='absolute right-1 cursor-pointer hover:bg-slate-300 rounded-full p-2' >
-              {isVisible ? <Eye weight='duotone' size={24}/> : <EyeClosed weight='duotone' size={24}/>}
-            </div>
-          </div>
+          <Input.Root>
+            <Input.Icon icon={User} />
+            <Input.Section name='name' type='text' placeholder='Name' minLenght={4} />
+          </Input.Root>
+          <Input.Root>
+            <Input.Icon icon={At} />
+            <Input.Section name='username' type='text' placeholder='Username' minLenght={6} />
+          </Input.Root>
+          <Input.Root>
+            <Input.Icon icon={EnvelopeSimple} />
+            <Input.Section name='email' type='email' placeholder='E-mail' />
+          </Input.Root>
+          <Input.Root>
+            <Input.Icon icon={Password} />
+            <Input.Section name='password' type={`${isVisible ? 'text' : 'password'}`} placeholder='Password' minLenght={4} />
+            <Input.Button onClickFunction={toogleVisibly} visibly={isVisible}/>
+          </Input.Root>
           <input className='hidden' name='photo' type='file' id='file'/>
           <label className='cursor-pointer flex font-medium items-center text-sm gap-1 text-neon-blue' htmlFor='file'>
             <ImageSquare weight='duotone' size={32}/>
             <span>Add a profile photo</span>
           </label>
         </div>
-        <Form.Button title='Sign up' />
+        <Form.Button disable={isLoading} title='Sign up' />
         <Form.Link title='Login' path='/login' text='Already have an account?' />
       </Form.Root>
     </MenuWrapper>
