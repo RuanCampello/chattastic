@@ -78,7 +78,7 @@ export default function Chats() {
           const userInfo = chat[1]['userInfo']
           
           return (
-            <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className={`hover:bg-jet flex items-center md:justify-start justify-center p-1 py-2 md:p-2 md:px-3 rounded-xl cursor-pointer active:bg-jet/70 mb-2 transition-colors duration-300 group ${chat[1]['userInfo']['uid'] === userData.user.uid && 'bg-jet'}`}>
+            <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className={`hover:bg-jet flex items-center md:justify-start justify-center p-1 py-2 md:p-2 md:px-3 rounded-xl cursor-pointer active:bg-jet/40 mb-2 transition-colors duration-300 group ${chat[1]['userInfo']['uid'] === userData.user.uid && 'bg-jet'}`}>
             <Info.Root>
               <Info.Avatar>
                 <Info.Image name={userInfo['displayName']} source={userInfo['photoURL']} />
