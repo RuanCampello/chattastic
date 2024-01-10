@@ -4,7 +4,7 @@ interface InfoAvatarProps {
 }
 export default function InfoAvatar({children}: InfoAvatarProps) {
   return (
-    <div className='flex relative'>
+    <div className='flex relative shrink-0'>
       { children }
     </div>
   )

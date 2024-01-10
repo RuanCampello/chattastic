@@ -4,7 +4,7 @@ import { db, storage } from '@/firebase'
 import { Image, PaperPlaneRight, Smiley, XCircle } from '@phosphor-icons/react'
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
-import { Timestamp, arrayUnion, doc, updateDoc } from 'firebase/firestore'
+import { Timestamp, arrayUnion, doc, serverTimestamp, updateDoc } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
@@ -69,6 +69,14 @@ export default function InputMessage() {
           senderId: currentUser.uid,
           date: Timestamp.now(),
         })
+      })
+      await updateDoc(doc(db, 'userChats', currentUser.uid), {
+        [userData.chatId + '.lastMessage']: text,
+        [userData.chatId + '.date']: serverTimestamp()
+      })
+      await updateDoc(doc(db, 'userChats', userData.user.uid), {
+        [userData.chatId + '.lastMessage']: text,
+        [userData.chatId + '.date']: serverTimestamp()
       })
     }
     setSelectedMessage(null)

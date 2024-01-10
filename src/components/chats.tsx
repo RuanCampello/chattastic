@@ -14,6 +14,7 @@ type ChatType = {
       displayName: string
       status: 'online' | 'away' | 'offline'
     }
+    lastMessage: string
     date: number
   }
 }
@@ -72,6 +73,8 @@ export default function Chats() {
     <div>
       {
         Object.entries(chats)?.map((chat) => {
+          const lastMessage = chat[1]['lastMessage'] || ''
+          
           const userInfo = chat[1]['userInfo']
           
           return (
@@ -81,7 +84,7 @@ export default function Chats() {
                 <Info.Image name={userInfo['displayName']} source={userInfo['photoURL']} />
                 <Info.Activity activity={userActivities[userInfo['uid']]} />
               </Info.Avatar>
-              <Info.Content hideOnSmallScreens={true} name={userInfo['displayName']} activity={userActivities[userInfo['uid']]} />
+              <Info.Content hideOnSmallScreens={true} name={userInfo['displayName']} activity={userActivities[userInfo['uid']]} lastMessage={lastMessage} />
             </Info.Root>
           </div>
           )  
