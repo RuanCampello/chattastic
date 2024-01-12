@@ -12,6 +12,31 @@ const Messages = memo(() => {
   const { currentUser } = useContext(AuthContext)
   const chatContainerRef = useRef<HTMLDivElement>(null)
 
+  function scrollToBottom() {
+    if (chatContainerRef.current) {
+      const container = chatContainerRef.current
+      const images = container.querySelectorAll('img')
+  
+      //function to check if all possible images in chat are loaded
+      const areAllImagesLoaded = () => Array.from(images).every((image) => image.complete)
+
+      const handleScroll = () => container.scrollTop = container.scrollHeight
+
+      //if images are loaded, scroll
+      if (areAllImagesLoaded()) {
+        handleScroll()
+      } else { //if images are not loaded, wait for them to load
+        const loadHandler = () => {
+          if (areAllImagesLoaded()) {
+            handleScroll()
+            images.forEach((image) => image.removeEventListener('load', loadHandler))
+          }
+        }
+        images.forEach((image) => image.addEventListener('load', loadHandler))
+      }
+    }
+  }
+
   useEffect(() => {
     const unsub = onSnapshot(doc(db, 'chats', userData.chatId), (doc) => {      
       if (doc.exists()) setMessages(doc.data().messages as [])
@@ -20,13 +45,8 @@ const Messages = memo(() => {
   }, [userData.chatId])
 
   useEffect(() => {
-    // scroll to the bottom of the chat when messages change
-    if (chatContainerRef.current) {
-      const { scrollHeight, clientHeight } = chatContainerRef.current
-      chatContainerRef.current.scrollTop = scrollHeight - clientHeight
-    }
+    scrollToBottom()
   }, [messages])
-
   return (
     <div ref={chatContainerRef} className='md:px-4 pt-4 w-full overflow-y-auto scroll-smooth scrollbar scrollbar-w-3 scrollbar-track-jet scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg '>
       {messages.map((ms, index) => {
