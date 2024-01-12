@@ -10,7 +10,7 @@ import { Info } from './Info'
 export type UserData = {
   uid: string
   name: string
-  username: string
+  username: Promise<string>
   photoURL: string
 }
 
