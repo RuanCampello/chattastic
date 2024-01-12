@@ -14,6 +14,8 @@ export default function Register() {
   const [error, setError] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [profilePhoto, setProfilePhoto] = useState()
+  const [imagePreview, setImagePreview] = useState(String)
   const router = useRouter()
 
   const toogleVisibly = () => setIsVisible(!isVisible)
@@ -21,6 +23,15 @@ export default function Register() {
   async function checkUsernameExists(username: string): Promise<boolean> {
     const usernameQuery = await getDocs(query(collection(db, 'users'), where('username', '==', username)))
     return usernameQuery.size > 0
+  }
+  function handleImageInputChange(e: any) {
+    const file = e.target.files[0]
+    setProfilePhoto(file)
+
+    if(file) {
+      const previewURL = URL.createObjectURL(file)
+      setImagePreview(previewURL)
+    }
   }
   async function handleSubmit(e: any) {
     e.preventDefault()
@@ -73,28 +84,41 @@ export default function Register() {
     <MenuWrapper>
       <Form.Root onSubmitFunction={handleSubmit}>
         <Form.Header title='Register' />
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col'>
           <Input.Root>
             <Input.Icon icon={User} />
             <Input.Section name='name' type='text' placeholder='Name' minLenght={4} />
+            <Input.Invalid text='Please use a name with at least 4 characters' />
           </Input.Root>
           <Input.Root>
             <Input.Icon icon={At} />
             <Input.Section name='username' type='text' placeholder='Username' minLenght={6} />
+            <Input.Invalid text='Please use a username with at least 6 characters' />
           </Input.Root>
           <Input.Root>
             <Input.Icon icon={EnvelopeSimple} />
             <Input.Section name='email' type='email' placeholder='E-mail' />
+            <Input.Invalid text='Please use a valid e-mail' />
           </Input.Root>
           <Input.Root>
             <Input.Icon icon={Password} />
-            <Input.Section name='password' type={`${isVisible ? 'text' : 'password'}`} placeholder='Password' minLenght={4} />
+            <Input.Section name='password' type={`${isVisible ? 'text' : 'password'}`} placeholder='Password' minLenght={6} />
             <Input.Button onClickFunction={toogleVisibly} visibly={isVisible}/>
+            <Input.Invalid text='Please use a password with at least 6 characters' />
           </Input.Root>
-          <input className='hidden' name='photo' type='file' id='file'/>
-          <label className='cursor-pointer flex font-medium items-center text-sm gap-1 text-neon-blue' htmlFor='file'>
-            <ImageSquare weight='duotone' size={32}/>
-            <span>Add a profile photo</span>
+          <input onChange={handleImageInputChange} className='hidden' name='photo' type='file' id='file'/>
+          <label className={`cursor-pointer flex font-medium items-center text-sm gap-1 text-neon-blue ${imagePreview ? 'justify-center' : 'justify-start'}`} htmlFor='file'>
+            {!imagePreview ?
+              <>
+                <ImageSquare weight='duotone' size={32}/>
+                <span>Add a profile photo</span>
+              </>
+              :
+              <div className='group flex border-2 rounded-full border-neon-blue bg-eerie-black'>
+                <img className='w-24 h-24 object-cover rounded-full group-hover:grayscale group-hover:brightness-75 group:transition-colors duration-300' src={imagePreview} alt='preview image' />
+                <span className='text-transparent group-hover:text-neon-blue flex absolute self-center font-bold group:transition-colors duration-400 ease-in-out'>Change image</span>
+              </div>
+            }
           </label>
         </div>
         <Form.Button disable={isLoading} title='Sign up' />

@@ -30,6 +30,7 @@ export default function ForgotPassword() {
         <Input.Root>
           <Input.Icon icon={EnvelopeSimple} />
           <Input.Section name='email' type='email' placeholder='E-mail' />
+          <Input.Invalid text='Please use a valid e-mail' />
         </Input.Root>
         <Form.Button disable={isLoading} title='Send e-mail' />
       </Form.Root>

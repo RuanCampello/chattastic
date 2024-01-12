@@ -35,14 +35,16 @@ export default function Login() {
     <MenuWrapper>
       <Form.Root onSubmitFunction={handleSubmit}>
         <Form.Header title='Nice to see you again' />
-        <div className='flex flex-col gap-4'>
+        <div className='flex flex-col'>
           <Input.Root>
             <Input.Icon icon={EnvelopeSimple} />
             <Input.Section name='email' type='email' placeholder='E-mail' />
+            <Input.Invalid text='Please enter a valid e-mail' />
           </Input.Root>
           <Input.Root>
             <Input.Icon icon={Password} />
-            <Input.Section name='password' type={`${isVisible ? 'text' : 'password'}`} placeholder='Password' />
+            <Input.Section name='password' type={`${isVisible ? 'text' : 'password'}`} placeholder='Password' minLenght={6} />
+            <Input.Invalid text='Please enter a password with at least 6 characters' />
             <Input.Button onClickFunction={toogleVisibly} visibly={isVisible} />
           </Input.Root>
           <div className='text-end'>
