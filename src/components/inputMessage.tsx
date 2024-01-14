@@ -101,10 +101,13 @@ export default function InputMessage() {
       {selectedMessage &&
       <div className='flex justify-between items-center mb-2 font-medium'>
         <div className='mb-2 flex flex-col overflow-hidden'>
-        <span className='text-neutral-300'>
+        <span className='text-neutral-400'>
           Replying to {selectedMessage.owner ? 'yourself' : <b>{userData.user.displayName}</b>}
         </span>
-        <p className='text-neutral-200 truncate'>{selectedMessage.text}</p>
+        <div className='text-neutral-200 flex gap-1'>
+          {selectedMessage.hasImage && <ImageIcon size={24} weight='duotone' />}
+          <p className='truncate'>{selectedMessage.text || 'photo'}</p>
+        </div>
         </div>            
         <button onClick={() => setSelectedMessage(null)} className='text-neutral-300'>
           <XCircle size={24} weight='duotone' />

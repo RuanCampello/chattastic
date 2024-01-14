@@ -12,8 +12,14 @@ interface MessageContentProps {
 
 export default function MessageContent({owner, imgURL, text, time}: MessageContentProps) {
   const { setSelectedMessage } = useContext(MessageContext)
+  const hasImage = imgURL ? true : false
+  
   function handleReply() {
-    setSelectedMessage({text: text, owner: owner})
+    setSelectedMessage({
+      text: text,
+      owner: owner,
+      hasImage: hasImage
+    })
   }
   return (
     <div className={`${owner && 'justify-self-end flex-row-reverse'} items-center gap-1 group flex`}>
