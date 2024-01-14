@@ -1,5 +1,14 @@
 # Chattastic
 
+<div align="center">
+  <img src="https://img.shields.io/badge/Next.js-v14-61dafb" alt="Next.js Version">
+  <img src="https://img.shields.io/badge/TypeScript-Supported-blue" alt="TypeScript">
+  <img src="https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=flat&logo=tailwind-css&logoColor=white" alt="Tailwind CSS">
+  <img src="https://img.shields.io/badge/Firebase-FFCA28?style=flat&logo=firebase&logoColor=black" alt="Firebase">
+  <img src="https://img.shields.io/badge/Real--Time-Chat-4CAF50" alt="Real-Time">
+  <img src="https://img.shields.io/github/v/release/RuanCampello/chattastic" alt="Release Version">
+</div>
+
 Chattastic is a real-time chat application designed to provide seamless communication. Leveraging the power of Next.js v14 and TypeScript, this application offers a modern and efficient chatting experience. The styling is crafted using the expressive and utility-first CSS framework, Tailwind CSS.
 
 ## Table of Contents
