@@ -14,6 +14,7 @@ export default function InputMessage() {
   const [text, setText] = useState(String)
   const [file, setFile] = useState<File | null>()
   const [emojiPickerVisible, setEmojiPickerVisible] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
 
   const { userData } = useContext(ChatContext)
   const { currentUser } = useContext(AuthContext) 
@@ -24,30 +25,35 @@ export default function InputMessage() {
   }
   async function handleClick(e: any) {
     e.preventDefault()
-  
+    
+    if(isUploading) return
+
     if (file) {
+      setIsUploading(true)
+
       const storageRef = ref(storage, uuid())
       const uploadTask = uploadBytesResumable(storageRef, file)
-  
-      uploadTask.on('state_changed', () => {
+      try {
+        const snapshot = await uploadTask
+        const downloadURL = await getDownloadURL(snapshot.ref)
 
-      }, (error) => {
-        console.error('error during upload:', error)
-      }, async() => {
-        getDownloadURL(uploadTask.snapshot.ref).then(async (downloadURL) => {
-          await updateDoc(doc(db, 'chats', userData.chatId), {
-            messages: arrayUnion({
-              id: uuid(),
-              text,
-              senderId: currentUser.uid,
-              date: Timestamp.now(),
-              img: downloadURL,
-            })
+        await updateDoc(doc(db, 'chats', userData.chatId), {
+          messages: arrayUnion({
+            id: uuid(),
+            text,
+            senderId: currentUser.uid,
+            date: Timestamp.now(),
+            img: downloadURL
           })
         })
-      })
+
+        setFile(null)
+        setText('')
+      } catch(error) {
+        console.error('Error during image upload:', error)
+      }
     }
-    if (selectedMessage) {
+    else if (selectedMessage) {
       await updateDoc(doc(db, 'chats', userData.chatId), {
         messages: arrayUnion({
           id: uuid(),
@@ -70,19 +76,20 @@ export default function InputMessage() {
           date: Timestamp.now(),
         })
       })
-      await updateDoc(doc(db, 'userChats', currentUser.uid), {
-        [userData.chatId + '.lastMessage']: text,
-        [userData.chatId + '.date']: serverTimestamp()
-      })
-      await updateDoc(doc(db, 'userChats', userData.user.uid), {
-        [userData.chatId + '.lastMessage']: text,
-        [userData.chatId + '.date']: serverTimestamp()
-      })
     }
+    //update the last message of the chat
+    await updateDoc(doc(db, 'userChats', currentUser.uid), {
+      [userData.chatId + '.lastMessage']: text,
+      [userData.chatId + '.date']: serverTimestamp()
+    })
+    await updateDoc(doc(db, 'userChats', userData.user.uid), {
+      [userData.chatId + '.lastMessage']: text,
+      [userData.chatId + '.date']: serverTimestamp()
+    })
     setSelectedMessage(null)
     setText('')
-    setFile(null)
     setEmojiPickerVisible(false)
+    setIsUploading(false)
   }
   
   return (
@@ -101,7 +108,7 @@ export default function InputMessage() {
       </div>
       }
       <form onSubmit={e => e.preventDefault()} className='w-full text-neutral-400 bg-eerie-black rounded-3xl font-semibold flex items-center p-1'>
-      <button 
+        <button 
           type='button' 
           onClick={() => setEmojiPickerVisible(!emojiPickerVisible)} className='hover:bg-jet p-2 rounded-full transition-colors duration-300'>
           <Smiley size={28} weight='duotone'/>
