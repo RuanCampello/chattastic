@@ -59,8 +59,13 @@ export default function SearchBar() {
   }
 
   function handleSelection(user: any) {
-    dispatch({type: 'CHANGE_USER', payload: user})
+    const selectedUser = {
+      ...user,
+      displayName: user.name
+    }
+    dispatch({type: 'CHANGE_USER', payload: selectedUser}) 
   }
+
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     handleSearch()
@@ -79,7 +84,6 @@ export default function SearchBar() {
     const q = query(collection(db, 'users'), where('username', '==', queryInput.trim()))
     try {
       const querySnapshot = await getDocs(q)
-  
       if (!querySnapshot.empty) {
         const users = querySnapshot.docs.map((doc) => doc.data() as UserData)
         const validUser = users.find((user) => checkQueryUser(user))
@@ -90,7 +94,6 @@ export default function SearchBar() {
       } else setUser(null)
     } catch (error) {
       setError(true)
-      
     }
   }
   

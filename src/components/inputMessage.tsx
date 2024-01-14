@@ -1,7 +1,7 @@
 import { AuthContext } from '@/context/AuthContext'
 import { ChatContext } from '@/context/ChatContext'
 import { db, storage } from '@/firebase'
-import { Image, PaperPlaneRight, Smiley, XCircle } from '@phosphor-icons/react'
+import { Image as ImageIcon, PaperPlaneRight, Smiley, XCircle } from '@phosphor-icons/react'
 import Picker from '@emoji-mart/react'
 import data from '@emoji-mart/data'
 import { Timestamp, arrayUnion, doc, serverTimestamp, updateDoc } from 'firebase/firestore'
@@ -126,7 +126,7 @@ export default function InputMessage() {
           }}
           type='file' className='hidden' id='file' />
           <label className='cursor-pointer hover:bg-jet p-2 rounded-full transition-colors duration-300' htmlFor='file'>
-            <Image size={28} weight='duotone' />
+            <ImageIcon size={28} weight='duotone' />
           </label>
           <button disabled={text.trim() === '' && file === null} onClick={handleClick} className='hover:bg-jet p-2 rounded-full transition-colors duration-300'>
             <PaperPlaneRight size={28} weight='duotone' />
