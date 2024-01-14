@@ -50,12 +50,12 @@ export default function Navbar() {
   const currentUserActivity = String(currentUserStatus)
 
   return (
-    <div className='2xl:rounded-bl-lg flex items-center md:justify-between justify-center p-2 py-4 md:p-4 w-full bg-eerie-black border-t border-neon-blue'>
+    <div className='2xl:rounded-bl-lg flex items-center md:justify-between justify-center px-2 py-3 md:p-4 w-full bg-eerie-black border-t border-neon-blue'>
       {isLoading ? (
         // skeleton while is loading
-        <div className='flex items-center gap-4'>
+        <div className='flex items-center gap-3'>
           <div className='h-10 w-10 bg-gray-500 rounded-full animate-pulse' />
-          <div className='flex flex-col gap-1'>
+          <div className='md:flex hidden flex-col gap-1'>
             <div className='h-4 bg-gray-500 w-20 animate-pulse rounded-full' />
             <div className='h-3 bg-gray-500 w-16 animate-pulse rounded-full' />
           </div>
