@@ -137,10 +137,9 @@ export default function InputMessage() {
           </button>
         </div>
       </form>
-      <div className={`absolute left-0 ${selectedMessage ? 'bottom-[14.75vh]' : 'bottom-[7vh]'} emoji-picker-container`}>
+      <div className={`absolute left-0 ${selectedMessage ? 'bottom-[14.75vh]' : 'bottom-[7vh]'}`}>
         {emojiPickerVisible && 
           <Picker
-           id={'emoji-picker-container'}
            data={data}
            theme={'dark'}
            previewPosition={'none'}
