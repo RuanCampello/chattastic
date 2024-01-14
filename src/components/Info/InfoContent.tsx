@@ -1,8 +1,10 @@
 import { useState } from 'react'
 import ToastWrapper from '../toast'
+import { Image as ImageIcon } from '@phosphor-icons/react'
 
 interface InfoActivityProps {
   name: string
+  hasImage?: boolean
   username?: Promise<string>
   isLoading?: boolean
   lastOnline?: string
@@ -10,7 +12,7 @@ interface InfoActivityProps {
   activity?: string
   hideOnSmallScreens?: boolean
 }
-export default function InfoContent({name, lastMessage, lastOnline, isLoading, activity, username, hideOnSmallScreens}: InfoActivityProps) {
+export default function InfoContent({name, hasImage, lastMessage, lastOnline, isLoading, activity, username, hideOnSmallScreens}: InfoActivityProps) {
   const showActivity = activity !== 'online' ? `online ${lastOnline}` : 'online'
   const [open, setOpen] = useState(false)
 
@@ -32,9 +34,12 @@ export default function InfoContent({name, lastMessage, lastOnline, isLoading, a
       {lastOnline && 
         <h3 className='lowercase text-sm text-neutral-400 font-medium'>{showActivity}</h3>
       }
-      {lastMessage && 
-        <h3 className='text-neutral-400 text-sm font-semibold line-clamp-1'>{lastMessage}</h3>
-      }
+      {lastMessage || hasImage && (
+        <div className={`text-neutral-400 text-sm font-semibold flex items-center ${hasImage && 'gap-1'}`}>
+          {hasImage && <ImageIcon size={16} weight='fill'/>}
+          <h3 className='line-clamp-1'>{lastMessage || 'photo'}</h3>
+        </div>
+      )}
     </div>
   )
 }

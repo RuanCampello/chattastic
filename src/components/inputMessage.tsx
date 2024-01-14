@@ -23,6 +23,32 @@ export default function InputMessage() {
   function handleEmojiSelection(emoji: any) {
     setText((previousText) => previousText + emoji.native)
   }
+  async function updateLastMessage(text: string, hasImage: boolean) {
+    //update the last message of the chat
+    const fields: any = {
+      [userData.chatId + '.lastMessage']: text,
+      [userData.chatId + '.date']: serverTimestamp()
+    }
+    if(hasImage) fields[userData.chatId + '.hasImage'] = true
+    else fields[userData.chatId + '.hasImage'] = false
+
+    //update the last message for the current user's chat
+    await updateDoc(doc(db, 'userChats', currentUser.uid), fields)
+    //update the last message for the other user's chat
+    await updateDoc(doc(db, 'userChats', userData.user.uid), fields)
+  }
+  //commun function to add messages and update the chat last message
+  async function addMessage(messageData: any) {
+    const hasImage = typeof messageData.img !== 'undefined' && messageData.img !== ''
+    
+    await updateDoc(doc(db, 'chats', userData.chatId), {
+      messages: arrayUnion({
+        id: uuid(),
+        ...messageData,
+      })
+    })
+    await updateLastMessage(messageData.text, hasImage)
+  }
   async function handleClick(e: any) {
     e.preventDefault()
     
@@ -37,55 +63,33 @@ export default function InputMessage() {
         const snapshot = await uploadTask
         const downloadURL = await getDownloadURL(snapshot.ref)
 
-        await updateDoc(doc(db, 'chats', userData.chatId), {
-          messages: arrayUnion({
-            id: uuid(),
-            text,
-            senderId: currentUser.uid,
-            date: Timestamp.now(),
-            img: downloadURL
-          })
+        await addMessage({
+          text,
+          senderId: currentUser.uid,
+          date: Timestamp.now(),
+          img: downloadURL,
+          repliedMessage: selectedMessage && {
+            repliedOwner: selectedMessage.owner,
+            repliedText: selectedMessage.text,
+            receiverUid: userData.user.uid,
+          }
         })
-
         setFile(null)
-        setText('')
       } catch(error) {
         console.error('Error during image upload:', error)
       }
-    }
-    else if (selectedMessage) {
-      await updateDoc(doc(db, 'chats', userData.chatId), {
-        messages: arrayUnion({
-          id: uuid(),
-          text,
-          senderId: currentUser.uid,
-          repliedMessage: {
-            repliedOwner: selectedMessage.owner,
-            repliedText: selectedMessage.text,
-            receiverUid: userData.user.uid
-          },
-          date: Timestamp.now(),
-        })
-      })
     } else {
-      await updateDoc(doc(db, 'chats', userData.chatId), {
-        messages: arrayUnion({
-          id: uuid(),
-          text,
-          senderId: currentUser.uid,
-          date: Timestamp.now(),
-        })
+      await addMessage({
+        text,
+        senderId: currentUser.uid,
+        date: Timestamp.now(),
+        repliedMessage: selectedMessage && {
+          repliedOwner: selectedMessage.owner,
+          repliedText: selectedMessage.text,
+          receiverUid: userData.user.uid,
+        }
       })
     }
-    //update the last message of the chat
-    await updateDoc(doc(db, 'userChats', currentUser.uid), {
-      [userData.chatId + '.lastMessage']: text,
-      [userData.chatId + '.date']: serverTimestamp()
-    })
-    await updateDoc(doc(db, 'userChats', userData.user.uid), {
-      [userData.chatId + '.lastMessage']: text,
-      [userData.chatId + '.date']: serverTimestamp()
-    })
     setSelectedMessage(null)
     setText('')
     setEmojiPickerVisible(false)

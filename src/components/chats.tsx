@@ -15,6 +15,7 @@ type ChatType = {
       status: 'online' | 'away' | 'offline'
     }
     lastMessage: string
+    hasImage: true
     date: number
   }
 }
@@ -73,18 +74,20 @@ export default function Chats() {
     <div>
       {
         Object.entries(chats)?.map((chat) => {
+
           const lastMessage = chat[1]['lastMessage'] || ''
-          
           const userInfo = chat[1]['userInfo']
+          const hasImage = chat[1]['hasImage']
+          if(!userInfo || !userData) return
           
           return (
-            <div onClick={() => handleSelectUser(chat[1]['userInfo'])} key={chat[0]} className={`hover:bg-jet flex items-center md:justify-start justify-center p-1 py-2 md:p-2 md:px-3 rounded-xl cursor-pointer active:bg-jet/40 mb-2 transition-colors duration-300 group ${chat[1]['userInfo']['uid'] === userData.user.uid && 'bg-jet'}`}>
+            <div onClick={() => handleSelectUser(userInfo)} key={chat[0]} className={`hover:bg-jet flex items-center md:justify-start justify-center p-1 py-2 md:p-2 md:px-3 rounded-xl cursor-pointer active:bg-jet/40 mb-2 transition-colors duration-300 group ${userInfo['uid'] === userData.user.uid && 'bg-jet'}`}>
             <Info.Root>
               <Info.Avatar>
                 <Info.Image name={userInfo['displayName']} source={userInfo['photoURL']} />
                 <Info.Activity activity={userActivities[userInfo['uid']]} />
               </Info.Avatar>
-              <Info.Content hideOnSmallScreens={true} name={userInfo['displayName']} activity={userActivities[userInfo['uid']]} lastMessage={lastMessage} />
+              <Info.Content hideOnSmallScreens={true} name={userInfo['displayName']} activity={userActivities[userInfo['uid']]} lastMessage={lastMessage} hasImage={hasImage} />
             </Info.Root>
           </div>
           )  
