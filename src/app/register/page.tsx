@@ -9,13 +9,15 @@ import { useRouter } from 'next/navigation'
 import MenuWrapper from '@/components/menuwrapper'
 import { Form } from '@/components/Form'
 import { Input } from '@/components/Input'
+import Image from 'next/image'
+import ToastWrapper from '@/components/toast'
 
 export default function Register() {
-  const [error, setError] = useState(false)
   const [isVisible, setIsVisible] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
-  const [profilePhoto, setProfilePhoto] = useState()
+  const [open, setOpen] = useState(false)
   const [imagePreview, setImagePreview] = useState(String)
+  const [errorMessage, setErrorMessage] = useState(String)
   const router = useRouter()
 
   const toogleVisibly = () => setIsVisible(!isVisible)
@@ -26,8 +28,6 @@ export default function Register() {
   }
   function handleImageInputChange(e: any) {
     const file = e.target.files[0]
-    setProfilePhoto(file)
-
     if(file) {
       const previewURL = URL.createObjectURL(file)
       setImagePreview(previewURL)
@@ -35,22 +35,27 @@ export default function Register() {
   }
   async function handleSubmit(e: any) {
     e.preventDefault()
-    setIsLoading(true)
     const name = e.target.name.value
     const email = e.target.email.value
     const password = e.target.password.value
     const username = e.target.username.value
     const photo = e.target.photo.files[0]
 
-    if(!name || !email || !password || !username || !photo) return
+    if(!name || !email || !password || !username || !photo) {
+      setErrorMessage('All fields are required!')
+      setOpen(true)
+      return
+    }
 
     //check uniqueness of the username
     const usernameExists = await checkUsernameExists(username)
     if(usernameExists) {
-      setError(true)
-      console.error('Username is not unique')
+      setErrorMessage('Username is not unique')
+      setOpen(true)
       return
     }
+
+    setIsLoading(true)
     try {
       const response = await createUserWithEmailAndPassword(auth, email, password)
       const date = new Date().getTime()
@@ -77,7 +82,6 @@ export default function Register() {
       })
     } catch (error) {
       console.error('Registration Error:', error)
-      setError(true)
     }
   }
   return (
@@ -92,8 +96,8 @@ export default function Register() {
           </Input.Root>
           <Input.Root>
             <Input.Icon icon={At} />
-            <Input.Section name='username' type='text' placeholder='Username' minLenght={6} />
-            <Input.Invalid text='Please use a username with at least 6 characters' />
+            <Input.Section name='username' type='text' placeholder='Username' minLenght={5} />
+            <Input.Invalid text='Please use a username with at least 5 characters' />
           </Input.Root>
           <Input.Root>
             <Input.Icon icon={EnvelopeSimple} />
@@ -115,13 +119,15 @@ export default function Register() {
               </>
               :
               <div className='group flex border-2 rounded-full border-neon-blue bg-eerie-black'>
-                <img className='w-24 h-24 object-cover rounded-full group-hover:grayscale group-hover:brightness-75 group:transition-colors duration-300' src={imagePreview} alt='preview image' />
+                <Image className='w-24 h-24 object-cover rounded-full group-hover:grayscale group-hover:brightness-50 group:transition-colors duration-300' src={imagePreview} alt='preview image' width={96} height={96} />
                 <span className='text-transparent group-hover:text-neon-blue flex absolute self-center font-bold group:transition-colors duration-400 ease-in-out'>Change image</span>
               </div>
             }
           </label>
         </div>
-        <Form.Button disable={isLoading} title='Sign up' />
+        <ToastWrapper type='error' setIsOpen={() => setOpen(false)} title={'Error!'} description={errorMessage} isOpen={open}>
+          <Form.Button disable={isLoading} title='Sign up' />
+        </ToastWrapper>
         <Form.Link title='Login' path='/login' text='Already have an account?' />
       </Form.Root>
     </MenuWrapper>

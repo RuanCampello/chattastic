@@ -1,4 +1,4 @@
-import Image from "next/image"
+import Image from 'next/image'
 interface InfoImageProps {
   name: string
   source: string
@@ -11,7 +11,7 @@ export default function InfoImage({name, source}: InfoImageProps) {
       src={source}
       width={48}
       height={48}
-      className={'rounded-full object-cover h-10 w-10 group-hover:scale-105 group-active:scale-90 transition-transform duration-300'}
+      className={'rounded-full object-cover h-10 w-10 group-hover:scale-105 group-active:scale-95 transition-transform duration-300'}
     />
   )
 }
