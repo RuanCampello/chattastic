@@ -23,6 +23,9 @@ const config: Config = {
         'imperial-red': '#F23F43',
         'xanthous': '#F0B232',
         'pigment-green': '#23A55A'
+      },
+      spacing: {
+        '18': '4.25rem'
       }
     },
   },
