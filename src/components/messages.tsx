@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState, memo } from 'react'
+import React, { useContext, useEffect, useRef, useState, memo, RefObject } from 'react'
 import { ChatContext } from '@/context/ChatContext'
 import { doc, onSnapshot } from 'firebase/firestore'
 import { db } from '@/firebase'
@@ -6,36 +6,39 @@ import { AuthContext } from '@/context/AuthContext'
 import { formatTime } from '@/utils'
 import { Message } from './Message'
 
-const Messages = memo(() => {
-  const [messages, setMessages] = useState([])
-  const { userData } = useContext(ChatContext)
-  const { currentUser } = useContext(AuthContext)
-  const chatContainerRef = useRef<HTMLDivElement>(null)
+function useScrollToBottom(containerRef: RefObject<HTMLDivElement>, messages: any) {
+  useEffect(() => {
+    const scrollToBottom = () => {
+      if (containerRef.current) {
+        const container = containerRef.current
+        const images = container.querySelectorAll('img')
 
-  function scrollToBottom() {
-    if (chatContainerRef.current) {
-      const container = chatContainerRef.current
-      const images = container.querySelectorAll('img')
-  
-      //function to check if all possible images in chat are loaded
-      const areAllImagesLoaded = () => Array.from(images).every((image) => image.complete)
+        const areAllImagesLoaded = () => Array.from(images).every((image) => image.complete)
 
-      const handleScroll = () => container.scrollTop = container.scrollHeight
+        const handleScroll = () => container.scrollTop = container.scrollHeight
 
-      //if images are loaded, scroll
-      if (areAllImagesLoaded()) {
-        handleScroll()
-      } else { //if images are not loaded, wait for them to load
         const loadHandler = () => {
           if (areAllImagesLoaded()) {
             handleScroll()
             images.forEach((image) => image.removeEventListener('load', loadHandler))
           }
         }
+
         images.forEach((image) => image.addEventListener('load', loadHandler))
+        handleScroll()
       }
     }
-  }
+    scrollToBottom()
+  }, [containerRef, messages])
+}
+
+const Messages = memo(() => {
+  const [messages, setMessages] = useState([])
+  const { userData } = useContext(ChatContext)
+  const { currentUser } = useContext(AuthContext)
+  const chatContainerRef = useRef<HTMLDivElement>(null)
+  
+  useScrollToBottom(chatContainerRef, messages)
 
   useEffect(() => {
     const unsub = onSnapshot(doc(db, 'chats', userData.chatId), (doc) => {      
@@ -44,11 +47,8 @@ const Messages = memo(() => {
     return () => unsub()
   }, [userData.chatId])
 
-  useEffect(() => {
-    scrollToBottom()
-  }, [messages])
   return (
-    <div ref={chatContainerRef} className='md:px-4 pt-4 w-full overflow-y-auto scroll-smooth scrollbar scrollbar-w-3 scrollbar-track-jet scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg '>
+    <div ref={chatContainerRef} className='md:px-4 py-4 w-full overflow-y-auto scroll-smooth scrollbar scrollbar-w-3 scrollbar-track-jet scrollbar-thumb-eerie-black scrollbar-thumb-rounded-full scrollbar-track-rounded-lg'>
       {messages.map((ms, index) => {
         const isOwner = ms['senderId'] === currentUser.uid
         const timestamp = ms['date']['seconds']
