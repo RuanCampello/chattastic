@@ -140,7 +140,7 @@ export default function InputMessage() {
           </button>
         </div>
       </form>
-      <div className={`absolute left-0 ${selectedMessage ? 'bottom-[14.75vh]' : 'bottom-[7vh]'}`}>
+      <div className={`absolute left-0 ${selectedMessage ? 'bottom-[9rem]' : 'bottom-[4.5rem]'}`}>
         {emojiPickerVisible && 
           <Picker
            data={data}
