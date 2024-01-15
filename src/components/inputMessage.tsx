@@ -98,9 +98,9 @@ export default function InputMessage() {
   }
   
   return (
-    <div className={`p-2 ${selectedMessage && 'border-t-2 border-eerie-black'}`} >
+    <div className={`p-2 bg-jet ${selectedMessage && 'border-t-2 border-eerie-black'}`} >
       {selectedMessage &&
-      <div className='flex justify-between items-center mb-2 font-medium'>
+      <div className='flex justify-between items-center mb-2 font-medium px-2'>
         <div className='mb-2 flex flex-col overflow-hidden'>
         <span className='text-neutral-400'>
           Replying to {selectedMessage.owner ? 'yourself' : <b>{userData.user.displayName}</b>}
@@ -146,7 +146,7 @@ export default function InputMessage() {
           </button>
         </div>
       </form>
-      <div className={`absolute left-0 ${selectedMessage ? 'bottom-[9rem]' : 'bottom-[4.5rem]'}`}>
+      <div className={`absolute left-[0.5rem] ${selectedMessage ? 'bottom-[9rem]' : 'bottom-[4.25rem]'}`}>
         {emojiPickerVisible && 
           <Picker
            data={data}

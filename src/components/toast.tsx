@@ -1,6 +1,7 @@
+import { ChatContext } from '@/context/ChatContext'
 import { XCircle } from '@phosphor-icons/react'
 import * as Toast from '@radix-ui/react-toast'
-import { ReactNode } from 'react'
+import { ReactNode, useContext } from 'react'
 
 interface ToastProps {
   children: ReactNode
@@ -11,6 +12,7 @@ interface ToastProps {
   setIsOpen: () => void
 }
 export default function ToastWrapper({children, title, description, type, isOpen, setIsOpen}: ToastProps) {
+  const { userData } = useContext(ChatContext)
   return (
     <Toast.Provider>
       {children}
@@ -27,7 +29,7 @@ export default function ToastWrapper({children, title, description, type, isOpen
           <XCircle size={24} weight='duotone' />
         </Toast.Close>
       </Toast.Root>
-      <Toast.Viewport className={`transition bg-eerie-black ${type === 'error' ? 'border-pink-500' : 'border-neon-blue'} duration-300 ${isOpen ? 'fixed bottom-4 right-0 p-4 rounded-lg -translate-x-4 border' : 'translate-x-1/2'}`} />
+      <Toast.Viewport className={`transition bg-eerie-black ${type === 'error' ? 'border-pink-500' : 'border-neon-blue'} duration-300 ${isOpen ? 'fixed bottom-4 right-0 p-4 rounded-lg -translate-x-4 border' : 'translate-x-1/2'} ${isOpen && userData.chatId && 'bottom-20'}`} />
     </Toast.Provider>
   )
 }

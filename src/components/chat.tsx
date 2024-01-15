@@ -17,10 +17,10 @@ export default function Chat() {
   const user = userData?.user
   
   return (
-    <div className='lg:w-3/4 md:w-2/3 w-full 2xl:rounded-r-lg p-2 pb-0 flex flex-col'>
+    <div className='lg:w-3/4 md:w-2/3 w-full 2xl:rounded-r-lg pb-0 flex flex-col'>
       {userData.user && Object.keys(userData.user).length > 0 &&
       <>
-        <div className='flex flex-col flex-1 overflow-hidden'>
+        <div className='flex p-2 pb-0 flex-col flex-1 overflow-hidden'>
           <div className='border-b-2 border-eerie-black p-4 sticky top-0 bg-jet'>
             <Info.Root>
               <Info.Avatar>
