@@ -110,7 +110,7 @@ export default function Register() {
             <Input.Button onClickFunction={toogleVisibly} visibly={isVisible}/>
             <Input.Invalid text='Please use a password with at least 6 characters' />
           </Input.Root>
-          <input onChange={handleImageInputChange} className='hidden' name='photo' type='file' id='file'/>
+          <input onChange={handleImageInputChange} className='hidden' name='photo' type='file' id='file' accept='image/png, image/jpeg' />
           <label className={`cursor-pointer flex font-medium items-center text-sm gap-1 text-neon-blue ${imagePreview ? 'justify-center' : 'justify-start'}`} htmlFor='file'>
             {!imagePreview ?
               <>

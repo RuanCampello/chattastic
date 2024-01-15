@@ -124,14 +124,19 @@ export default function InputMessage() {
         <input
         value={text}
         onChange={(e) => setText(e.target.value)} 
-        className='w-full ps-0 p-2 focus:outline-none bg-eerie-black placeholder:truncate placeholder:text-neutral-500 placeholder:text-sm md:placeholder:text-base' type='text' 
+        className='w-full ps-0 p-2 focus:outline-none bg-eerie-black placeholder:truncate placeholder:text-neutral-500 placeholder:text-sm md:placeholder:text-base' 
+        type='text' 
         placeholder={`type your message to ${userData.user.displayName}...`}/>
         <div className='flex gap-1'>
-          <input onChange={(e) => {
+          <input
+           onChange={(e) => {
             const selectedFile = e.target.files?.[0]
             if(selectedFile) setFile(selectedFile)
           }}
-          type='file' className='hidden' id='file' />
+           type='file'
+           className='hidden'
+           accept='image/png, image/jpeg'
+           id='file' />
           <label className='cursor-pointer hover:bg-jet p-2 rounded-full transition-colors duration-300' htmlFor='file'>
             <ImageIcon size={28} weight='duotone' />
           </label>
