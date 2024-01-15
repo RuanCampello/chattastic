@@ -30,3 +30,8 @@ export function formatTime(date: Date) {
     return `${formattedDate} at ${formattedTime}`
   }
 }
+
+export function isImageFile(file: File) {
+  const acceptedImageTypes = ['image/jpeg', 'image/png']
+  return file && acceptedImageTypes.includes(file.type)
+}

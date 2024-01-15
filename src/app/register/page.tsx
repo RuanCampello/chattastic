@@ -11,6 +11,7 @@ import { Form } from '@/components/Form'
 import { Input } from '@/components/Input'
 import Image from 'next/image'
 import ToastWrapper from '@/components/toast'
+import { isImageFile } from '@/utils'
 
 export default function Register() {
   const [isVisible, setIsVisible] = useState(false)
@@ -28,7 +29,7 @@ export default function Register() {
   }
   function handleImageInputChange(e: any) {
     const file = e.target.files[0]
-    if(file) {
+    if(file && isImageFile(file)) {
       const previewURL = URL.createObjectURL(file)
       setImagePreview(previewURL)
     }

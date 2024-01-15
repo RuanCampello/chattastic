@@ -9,6 +9,7 @@ import { getDownloadURL, ref, uploadBytesResumable } from 'firebase/storage'
 import { useContext, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { MessageContext } from '@/context/MessageContext'
+import { isImageFile } from '@/utils'
 
 export default function InputMessage() {
   const [text, setText] = useState(String)
@@ -131,7 +132,7 @@ export default function InputMessage() {
           <input
            onChange={(e) => {
             const selectedFile = e.target.files?.[0]
-            if(selectedFile) setFile(selectedFile)
+            if(selectedFile && isImageFile(selectedFile)) setFile(selectedFile)
           }}
            type='file'
            className='hidden'
